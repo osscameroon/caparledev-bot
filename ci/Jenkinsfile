@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+    stages {
+        stage('PreBuild') {
+            agent {
+                docker {
+                    image 'mhart/alpine-node:10.20.1'
+                }
+            }
+            steps {
+                sh "yarn install"
+                sh "yarn lint"
+            }
+        }
+        stage('Build') {
+            agent {
+                docker {
+                    image 'mhart/alpine-node:10.20.1'
+                    args  '-v ${ENV_FOLDER}:/home'
+                }
+            }
+            steps {
+                sh "./ci/build.sh"
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh "./ci/run.sh"
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                echo "The build completed successfully!"
+            }
+        }
+        failure {
+            script {
+                echo "Fail to complete all the stages"
+            }
+        }
+    }
+    options {
+        // Make sure we only keep 2 builds at a time, so we don't fill up our storage!
+        buildDiscarder(logRotator(numToKeepStr:'2'))
+
+        // Make sure that this build doesn't hang forever, so let's time it out after 30 minutes.
+        timeout(time: 30, unit: 'MINUTES')
+    }
+}
