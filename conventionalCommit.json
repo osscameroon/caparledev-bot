@@ -1,6 +1,7 @@
 {
   "types": {
     "ci": {},
+    "chore": {},
     "enh": {},
     "eng": {},
     "docs": {},
