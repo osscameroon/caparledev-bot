@@ -39,6 +39,8 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
     "@types/axios": "^0.14.0",
     "@types/bunyan": "^1.8.6",
     "@types/chai": "^4.2.11",
@@ -53,11 +55,17 @@
     "@types/twitter": "^1.7.0",
     "@types/uuid": "^3.4.6",
     "chai": "^4.2.0",
+    "husky": "^4.3.6",
     "mocha": "^7.1.2",
     "nock": "^12.0.3",
     "nodemon": "^1.19.1",
     "sinon": "^9.0.2",
     "ts-node-dev": "^1.0.0-pre.42",
     "tslint-config-airbnb": "^5.11.1"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }
