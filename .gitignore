@@ -66,6 +66,5 @@ typings/
 logs
 build
 data.json
-yarn.lock
 package-lock.json
 .DS_Store

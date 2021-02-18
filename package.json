@@ -16,7 +16,6 @@
   "private": false,
   "scripts": {
     "start": "nodemon --watch '*.ts' --exec 'ts-node' ./app/index.ts",
-    "lint": "tslint --project tsconfig.json",
     "prod": "tsc && node ./build/index.js",
     "token-gen": "ts-node-dev --respawn --transpileOnly ./app/services/bearer.service.ts",
     "test": "NODE_ENV=test mocha -r ts-node/register ./app/tests/**/*.ts --recursive --exit --timeout 5000"
@@ -33,9 +32,7 @@
     "passport-twitter": "^1.0.4",
     "redis": "^2.8.0",
     "request-promise": "^4.2.5",
-    "tslint": "^5.19.0",
     "twitter": "^1.7.1",
-    "typescript": "^3.6.2",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
@@ -60,8 +57,7 @@
     "nock": "^12.0.3",
     "nodemon": "^1.19.1",
     "sinon": "^9.0.2",
-    "ts-node-dev": "^1.0.0-pre.42",
-    "tslint-config-airbnb": "^5.11.1"
+    "typescript": "^4.1.5"
   },
   "husky": {
     "hooks": {
