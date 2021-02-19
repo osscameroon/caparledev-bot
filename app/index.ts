@@ -25,37 +25,46 @@ Routes.init(app);
 
 const server: Server = http.createServer(app);
 
-server.listen(port, async (): Promise<void> => {
-	// Initialize Twitter application
-	TwitterService.init(
-		config.CONSUMER_KEY, config.CONSUMER_SECRET, config.ACCESS_TOKEN_KEY, config.ACCESS_TOKEN_SECRET,
-	);
+server.listen(
+  port,
+  async (): Promise<void> => {
+    // Initialize Twitter application
+    TwitterService.init(
+      config.CONSUMER_KEY,
+      config.CONSUMER_SECRET,
+      config.ACCESS_TOKEN_KEY,
+      config.ACCESS_TOKEN_SECRET,
+    );
 
-	// Initialize Twitter Account Activity Service
-	AccountActivityService.init(
-		config.CONSUMER_KEY, config.CONSUMER_SECRET, config.ACCESS_TOKEN_KEY, config.ACCESS_TOKEN_SECRET,
-	);
+    // Initialize Twitter Account Activity Service
+    AccountActivityService.init(
+      config.CONSUMER_KEY,
+      config.CONSUMER_SECRET,
+      config.ACCESS_TOKEN_KEY,
+      config.ACCESS_TOKEN_SECRET,
+    );
 
-	// Initialize connection to Mongo database
-	await dbConnection(config.DB_HOST, config.DB_PORT, config.DB_NAME, config.DB_USER, config.DB_PASSWORD);
+    // Initialize connection to Mongo database
+    await dbConnection(config.DB_HOST, config.DB_PORT, config.DB_NAME, config.DB_USER, config.DB_PASSWORD);
 
-	// Initialize connection to Redis database
-	Redis.init(config.REDIS_HOST, config.REDIS_PORT);
+    // Initialize connection to Redis database
+    Redis.init(config.REDIS_HOST, config.REDIS_PORT);
 
-	//
-	const account: IAccount|null = await AccountModel.findOne({ accountName: config.BOT_TWITTER_NAME });
+    //
+    const account: IAccount | null = await AccountModel.findOne({ accountName: config.BOT_TWITTER_NAME });
 
-	if (account) {
-		TwitterService.setAccountClient(account.accessToken, account.accessTokenSecret);
+    if (account) {
+      TwitterService.setAccountClient(account.accessToken, account.accessTokenSecret);
 
-		// Initialize Tweet Stream
-		await MainController.stream();
+      // Initialize Tweet Stream
+      await MainController.stream();
 
-		// Start the daemon to retweet tweets that failed
-		MainController.retweetMonitor();
-	} else {
-		logger.error('No account registered! Unable to stream the data!');
-	}
+      // Start the daemon to retweet tweets that failed
+      MainController.retweetMonitor();
+    } else {
+      logger.error('No account registered! Unable to stream the data!');
+    }
 
-	logger.info(`Server started - ${port}`);
-});
+    logger.info(`Server started - ${port}`);
+  },
+);

@@ -8,27 +8,27 @@ import { MainController } from '../controllers/main.controller';
  * @class
  */
 class MainRoute {
-	public router: Router;
+  public router: Router;
 
-	constructor() {
-		this.router = Router();
+  constructor() {
+    this.router = Router();
 
-		this.routes();
-	}
+    this.routes();
+  }
 
-	routes(): void {
-		const prefix: string = '';
+  routes(): void {
+    const prefix = '';
 
-		this.router.get(`${prefix}/`, MainController.welcome);
+    this.router.get(`${prefix}/`, MainController.welcome);
 
-		this.router.get(`${prefix}/auth/callback`, MainController.authCallback);
+    this.router.get(`${prefix}/auth/callback`, MainController.authCallback);
 
-		this.router.get(`${prefix}/auth/url`, MainController.getAuthorizeURL);
+    this.router.get(`${prefix}/auth/url`, MainController.getAuthorizeURL);
 
-		this.router.post(`${prefix}/webhooks/challenge`, MainController.activityUpdate);
+    this.router.post(`${prefix}/webhooks/challenge`, MainController.activityUpdate);
 
-		this.router.post(`${prefix}/users/lookup`, MainController.lookupUsers);
-	}
+    this.router.post(`${prefix}/users/lookup`, MainController.lookupUsers);
+  }
 }
 
 export { MainRoute };

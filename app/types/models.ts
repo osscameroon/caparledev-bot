@@ -1,28 +1,28 @@
 import { Document } from 'mongoose';
 
-export interface IRegistration extends Document {
-	tweetId: string;
-	userId: string;
-	userName: string;
-	userScreenName: string;
-	description: string;
-	protected: boolean;
-	verified: boolean;
-	processed: boolean;
-	approved: boolean;
-	retweetCount: number;
-}
+export type IRegistration = {
+  tweetId: string;
+  userId: string;
+  userName: string;
+  userScreenName: string;
+  description: string;
+  protected: boolean;
+  verified: boolean;
+  processed: boolean;
+  approved: boolean;
+  retweetCount: number;
+} & Document;
 
-export interface IAccount extends Document {
-	accountId: string;
-	accountName: string;
-	accessToken: string;
-	accessTokenSecret: string;
-	expirationDate: number; // timestamp
-}
+export type IAccount = {
+  accountId: string;
+  accountName: string;
+  accessToken: string;
+  accessTokenSecret: string;
+  expirationDate: number; // timestamp
+} & Document;
 
-export interface AccountActivitySubscription {
-	environment: string;
-	application_id: string;
-	subscriptions: any[];
-}
+export type AccountActivitySubscription = {
+  environment: string;
+  application_id: string;
+  subscriptions: any[];
+};

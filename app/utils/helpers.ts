@@ -13,21 +13,21 @@ type GetChallengeResponseFunc = (crcToken: string, consumerSecret: string) => st
  * @return string
  */
 export const getChallengeResponse: GetChallengeResponseFunc = (crcToken: string, consumerSecret: string): string => {
-	const encoded: string = crypto.createHmac('sha256', consumerSecret).update(crcToken).digest('base64');
+  const encoded: string = crypto.createHmac('sha256', consumerSecret).update(crcToken).digest('base64');
 
-	return `sha256=${encoded}`;
+  return `sha256=${encoded}`;
 };
 
-export const isCreateEvent: Function = (activity: Activity): boolean => {
-	return Object.keys(activity).indexOf(TwitterActivityEvent.tweetCreateEvents) >= 0;
+export const isCreateEvent = (activity: Activity): boolean => {
+  return Object.keys(activity).indexOf(TwitterActivityEvent.tweetCreateEvents) >= 0;
 };
 
-export const extractRegistrationData: Function = (tweet: TweetObject): Registration => {
-	return {
-		tweetId: tweet.id_str,
-		userId: tweet.user.id_str,
-		userName: tweet.user.name,
-		userScreenName:  tweet.user.screen_name,
-		protected:  tweet.user.protected,
-	};
+export const extractRegistrationData = (tweet: TweetObject): Registration => {
+  return {
+    tweetId: tweet.id_str,
+    userId: tweet.user.id_str,
+    userName: tweet.user.name,
+    userScreenName: tweet.user.screen_name,
+    protected: tweet.user.protected,
+  };
 };

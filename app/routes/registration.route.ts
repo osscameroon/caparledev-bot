@@ -8,23 +8,23 @@ import { RegistrationController } from '../controllers/registration.controller';
  * @class
  */
 class RegistrationRoute {
-	public router: Router;
+  public router: Router;
 
-	constructor() {
-		this.router = Router();
+  constructor() {
+    this.router = Router();
 
-		this.routes();
-	}
+    this.routes();
+  }
 
-	routes(): void {
-		const prefix: string = '/registrations';
+  routes(): void {
+    const prefix = '/registrations';
 
-		this.router.get(`${prefix}/:id`, RegistrationController.getOneRegistration);
+    this.router.get(`${prefix}/:id`, RegistrationController.getOneRegistration);
 
-		this.router.delete(`${prefix}/:id`, RegistrationController.deleteRegistration);
+    this.router.delete(`${prefix}/:id`, RegistrationController.deleteRegistration);
 
-		this.router.get(`${prefix}`, RegistrationController.getRegistrations);
-	}
+    this.router.get(`${prefix}`, RegistrationController.getRegistrations);
+  }
 }
 
 export { RegistrationRoute };

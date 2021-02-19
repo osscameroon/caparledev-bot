@@ -12,17 +12,20 @@ import { logger } from '../config/logger';
  * https://developer.twitter.com/en/docs/basics/authentication/oauth-2-0/bearer-tokens
  */
 (async (): Promise<void> => {
-	axios.post('https://api.twitter.com/oauth2/token', 'grant_type=client_credentials', {
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
-		auth: {
-			username: CONSUMER_KEY,
-			password: CONSUMER_SECRET,
-		},
-	}).then((response: AxiosResponse): void => {
-		logger.info(response.data);
-	}).catch((error: AxiosError): void => {
-		logger.error(error.response!.data);
-	});
+  axios
+    .post('https://api.twitter.com/oauth2/token', 'grant_type=client_credentials', {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      auth: {
+        username: CONSUMER_KEY,
+        password: CONSUMER_SECRET,
+      },
+    })
+    .then((response: AxiosResponse): void => {
+      logger.info(response.data);
+    })
+    .catch((error: AxiosError): void => {
+      logger.error(error.response!.data);
+    });
 })();

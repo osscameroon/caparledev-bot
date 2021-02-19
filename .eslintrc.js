@@ -1,15 +1,18 @@
 module.exports = {
   parser: '@typescript-eslint/parser', // Specifies the ESLint parser
   extends: [
-    'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
-    'prettier/@typescript-eslint', // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier
-    'plugin:prettier/recommended', // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier/@typescript-eslint',
+    'plugin:prettier/recommended', // Make sure this is always the last configuration in the extends array.
   ],
   plugins: ['sort-destructure-keys'],
   parserOptions: {
-    ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
-    sourceType: 'module', // Allows for the use of imports
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    project: './tsconfig.json'
   },
+  ignorePatterns: ['.eslintrc.js', '*.d.ts'],
   env: {
     es6: true,
     node: true,
@@ -23,7 +26,11 @@ module.exports = {
     'no-multiple-empty-lines': 'error',
     'prefer-const': 'error',
     'no-use-before-define': 'error',
-    'max-len': ['error', 120],
+    'max-len': ['error', 120, {
+      "ignoreComments": true,
+      "ignoreStrings": true,
+      "ignoreTemplateLiterals": true
+    }],
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
@@ -44,8 +51,15 @@ module.exports = {
     'object-shorthand': 'warn',
     'newline-after-var': ['error', 'always'],
     curly: 'error',
-    '@typescript-eslint/no-case-declarations': 'error',
-    '@typescript-eslint/padding-line-between-statements': [
+    'no-case-declarations': 'error',
+    '@typescript-eslint/prefer-nullish-coalescing': [
+      'error',
+      {
+        ignoreConditionalTests: true,
+        ignoreMixedLogicalExpressions: true,
+      }
+    ],
+    'padding-line-between-statements': [
       'error',
       {
         blankLine: 'always',

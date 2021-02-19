@@ -9,33 +9,33 @@ import { cacheMiddleware } from '../config/cache-middleware';
  * @class
  */
 class AccountActivityRoute {
-	public router: Router;
+  public router: Router;
 
-	constructor() {
-		this.router = Router();
+  constructor() {
+    this.router = Router();
 
-		this.routes();
-	}
+    this.routes();
+  }
 
-	routes(): void {
-		const prefix: string = '';
+  routes(): void {
+    const prefix = '';
 
-		this.router.post(`${prefix}/webhooks/register`, AccountActivityController.registerWebhook);
+    this.router.post(`${prefix}/webhooks/register`, AccountActivityController.registerWebhook);
 
-		this.router.get(`${prefix}/webhooks/challenge`, AccountActivityController.challenge);
+    this.router.get(`${prefix}/webhooks/challenge`, AccountActivityController.challenge);
 
-		this.router.get(`${prefix}/webhooks`, cacheMiddleware, AccountActivityController.getWebhooks);
+    this.router.get(`${prefix}/webhooks`, cacheMiddleware, AccountActivityController.getWebhooks);
 
-		this.router.delete(`${prefix}/webhooks/:id`, AccountActivityController.deleteWebhook);
+    this.router.delete(`${prefix}/webhooks/:id`, AccountActivityController.deleteWebhook);
 
-		this.router.put(`${prefix}/webhooks/:id`, AccountActivityController.triggerWebhookChallenge);
+    this.router.put(`${prefix}/webhooks/:id`, AccountActivityController.triggerWebhookChallenge);
 
-		this.router.post(`${prefix}/subscriptions`, AccountActivityController.createSubscription);
+    this.router.post(`${prefix}/subscriptions`, AccountActivityController.createSubscription);
 
-		this.router.delete(`${prefix}/subscriptions`, AccountActivityController.deleteSubscription);
+    this.router.delete(`${prefix}/subscriptions`, AccountActivityController.deleteSubscription);
 
-		this.router.get(`${prefix}/subscriptions`, cacheMiddleware, AccountActivityController.getSubscriptions);
-	}
+    this.router.get(`${prefix}/subscriptions`, cacheMiddleware, AccountActivityController.getSubscriptions);
+  }
 }
 
 export { AccountActivityRoute };
