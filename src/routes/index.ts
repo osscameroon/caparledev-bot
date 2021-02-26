@@ -10,11 +10,6 @@ import { MainRoute } from './main.route';
  * Global router configuration of the application
  */
 class Routes {
-  /**
-   * @param  {Application} app
-   *
-   * @returns void
-   */
   static init(app: express.Application): void {
     // Express middleware
     app.use(bodyParser.urlencoded({ extended: true }));

@@ -1,34 +1,54 @@
-import * as fs from 'fs';
 import path from 'path';
-import bunyan from 'bunyan';
-// @ts-ignore
-import * as Logger from '@types/bunyan';
+import fs from 'fs';
+import { createLogger, format, transports, Logger } from 'winston';
+import { isObject } from 'lodash';
 
-import * as config from './env';
+import { ENV, LOG_FILE_DIR } from './env';
+import { EnhancedLogger } from '../types/variables';
 
-const logFileDir: string | undefined = config.LOG_FILE_DIR;
-const dir: string = logFileDir ? path.join(__dirname, logFileDir) : '../../logs';
+const { combine, printf, timestamp }: typeof format = format;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const t: any = require('winston-daily-rotate-file');
 
-// Create the logs folder if not exists
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir);
+const logFileDir: string = path.join(__dirname, LOG_FILE_DIR);
+
+if (!fs.existsSync(logFileDir)) {
+  fs.mkdirSync(logFileDir);
 }
 
-const logger: Logger = bunyan.createLogger({
-  name: 'caparledev',
-  streams: [
-    {
-      type: 'rotating-file',
-      path: `${dir}/app.log`,
-      period: '1d', // daily rotation
-      count: 5, // keep 3 back copies
-    },
-    {
-      // Log message in the console
-      level: 'debug',
-      stream: process.stdout,
-    },
-  ],
+const transport = new t({
+  dirname: logFileDir,
+  filename: 'app-%DATE%.log',
+  datePattern: 'YYYY-MM-DD',
+  zippedArchive: true,
+  maxSize: '20m',
+  maxFiles: '14d',
 });
+
+const logMessage = (message: any): string => {
+  if (isObject(message)) {
+    // @ts-ignore
+    return message.stack ? message.stack : JSON.stringify(message, null, 2);
+  }
+
+  return message.toString();
+};
+
+const myFormat = printf((info) => {
+  const { level, message, timestamp } = info;
+
+  return `${timestamp} ${level}: ${logMessage(message)}`;
+});
+
+const winstonLogger: Logger = createLogger({
+  format: combine(timestamp(), myFormat),
+  transports: [transport, new transports.Console()],
+  silent: ENV === 'test',
+});
+
+const logger: EnhancedLogger = {
+  info: (output: unknown) => winstonLogger.info(logMessage(output)),
+  error: (output: unknown) => winstonLogger.error(logMessage(output)),
+};
 
 export { logger };
