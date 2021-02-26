@@ -14,7 +14,6 @@ import { Redis } from './utils/redis';
 import { AccountModel } from './models/account.model';
 
 import { TwitterService } from './services/twitter.service';
-import { AccountActivityService } from './services/account-activity.service';
 
 import { MainController } from './controllers/main.controller';
 
@@ -30,14 +29,6 @@ server.listen(
   async (): Promise<void> => {
     // Initialize Twitter application
     TwitterService.init(
-      config.CONSUMER_KEY,
-      config.CONSUMER_SECRET,
-      config.ACCESS_TOKEN_KEY,
-      config.ACCESS_TOKEN_SECRET,
-    );
-
-    // Initialize Twitter Account Activity Service
-    AccountActivityService.init(
       config.CONSUMER_KEY,
       config.CONSUMER_SECRET,
       config.ACCESS_TOKEN_KEY,

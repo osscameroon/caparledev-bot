@@ -1,46 +1,30 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
-import { BOT_TWITTER_NAME, HASHTAG_TO_TRACK, TWITTER_CALLBACK_URL } from '../config';
+import { HASHTAG_TO_TRACK, TWITTER_CALLBACK_URL } from '../config';
 import { logger } from '../config/logger';
 
-import { Activity, TweetObject, UserAccessTokenResponse } from '../types';
+import { UserAccessTokenResponse } from '../types/variables';
 import { IAccount } from '../types/models';
 
 import { AccountModel } from '../models/account.model';
 
 import { TwitterService } from '../services/twitter.service';
-import { AccountActivityService } from '../services/account-activity.service';
 
 import { TWEET_PREFIX_KEY } from '../utils/constants';
-import { isCreateEvent } from '../utils/helpers';
 import { Redis } from '../utils/redis';
-import { RegistrationService } from '../services/registration.service';
 
 class MainController {
   /**
-   * welcome()
-   *
    * Welcome message. Can be used for healthcheck
-   *
-   * @param req
-   * @param res
    */
-  public static welcome(req: Request, res: Response): void {
+  public static welcome(_req: Request, res: Response): void {
     res.json({ message: 'Welcome to Caparledev Bot' });
   }
 
   /**
-   *  authCallback()
-   *
    * User authentication callback
-   *
-   * @param {Request} req: Request object
-   * @param {Response} res: Response object
-   * @param {NextFunction} next: NextFunction object
-   *
-   * @return Object
    */
-  public static async authCallback(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public static async authCallback(req: Request, res: Response): Promise<void> {
     console.log('Auth callback called!');
 
     const { oauth_token, oauth_verifier }: any = req.query;
@@ -86,8 +70,6 @@ class MainController {
         console.log('Account created !');
 
         TwitterService.setAccountClient(oauthToken, oauthTokenSecret);
-
-        await AccountActivityService.createSubscription(oauthToken, oauthTokenSecret);
       }
 
       res.json({ message: 'success' });
@@ -97,34 +79,18 @@ class MainController {
   }
 
   /**
-   * getAuthorizeURL()
-   *
    * Get the authorize URL
-   *
-   * @param {Request} req: Request object
-   * @param {Response} res: Response object
-   * @param {NextFunction} next: NextFunction object
-   *
-   * @return Object
    */
-  public static async getAuthorizeURL(req: Request, res: Response, next: NextFunction): Promise<any> {
+  public static async getAuthorizeURL(_req: Request, res: Response): Promise<any> {
     const url: string = await TwitterService.processAuthorization(TWITTER_CALLBACK_URL);
 
     res.json({ url });
   }
 
   /**
-   * lookupUsers()
-   *
    * Get Twitter user's information
-   *
-   * @param {Request} req: Request object
-   * @param {Response} res: Response object
-   * @param {NextFunction} next: NextFunction object
-   *
-   * @return Object
    */
-  public static async lookupUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
+  public static async lookupUsers(req: Request, res: Response): Promise<void> {
     const screenNames: string = req.body.screen_names;
 
     TwitterService.lookupUsers(screenNames)
@@ -135,40 +101,6 @@ class MainController {
         logger.error(error);
         res.status(400).json(error);
       });
-  }
-
-  /**
-   * activityUpdate()
-   *
-   * Handle account activity update
-   *
-   * @param {Request} req: Request object
-   * @param {Response} res: Response object
-   * @param {NextFunction} next: NextFunction object
-   *
-   * @return Object
-   */
-  public static async activityUpdate(req: Request, res: Response, next: NextFunction): Promise<void> {
-    // console.log(req.body);
-    const activity: Activity = req.body;
-
-    if (isCreateEvent(activity)) {
-      const tweetObjects: TweetObject[] = activity.tweet_create_events;
-
-      for (let i = 0; i < tweetObjects.length; i += 1) {
-        const text: string = tweetObjects[i].text.trim();
-
-        if (text.startsWith(`@${BOT_TWITTER_NAME} subscribe`)) {
-          RegistrationService.subscribe(tweetObjects[i]);
-        } else if (text.startsWith(`@${BOT_TWITTER_NAME} unsubscribe`)) {
-          RegistrationService.unsubscribe(tweetObjects[i]);
-        } else {
-          // console.log('Unknown action! => ', text);
-        }
-      }
-    }
-
-    res.json({ message: 'success' });
   }
 
   /**

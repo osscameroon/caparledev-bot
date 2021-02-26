@@ -30,36 +30,6 @@ export type RequestTokenResponse = {
   oauth_callback_confirmed: string;
 };
 
-export enum TwitterActivityEvent {
-  // Tweet status payload when any of the following actions are taken by or to the subscription user:
-  // Tweets, Retweets, Replies, @mentions, QuoteTweets, Retweet of Quote Tweets.
-  tweetCreateEvents = 'tweet_create_events',
-  // Favorite (like) event status with the user and target.
-  favoriteEvents = 'favorite_events',
-  // Follow event with the user and target.
-  followEvents = 'follow_events',
-  // Unfollow event with the user and target.
-  unfollowEvents = 'unfollow_events',
-  // Block event with the user and target.
-  blockEvents = 'block_events',
-  // Unblock event with the user and target.
-  unblockEvents = 'unblock_events',
-  // Mute event with the user and target.
-  muteEvents = 'mute_events',
-  // Unmute event with the user and target.
-  unmuteEvents = 'unmute_events',
-  // Revoke events sent when a user removes application authorization and subscription is automatically deleted.
-  userEvent = 'user_event',
-  // Direct message status with the user and target when a direct message is sent or received.
-  directMessageEvents = 'direct_message_events',
-  // Direct message typing event with the user and target.
-  directMessageIndicateTypingEvents = 'direct_message_indicate_typing_events',
-  // Direct message read event with the user and target.
-  directMessageMarkReadEvents = 'direct_message_mark_read_events',
-  // Notice of deleted Tweets to make it easier to maintain compliance.
-  tweetDeleteEvents = 'tweet_delete_events',
-}
-
 export type TweetObject = {
   created_at: string;
   id: number;
@@ -114,12 +84,6 @@ type User = {
   following?: any;
   follow_request_sent?: any;
   notifications?: any;
-};
-
-export type Activity = {
-  for_user_id: string;
-  user_has_blocked: boolean;
-  tweet_create_events: TweetObject[];
 };
 
 export type TwitterErrorItem = {

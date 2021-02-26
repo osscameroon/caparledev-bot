@@ -19,7 +19,7 @@
     "prod": "tsc && node ./build/index.js",
     "lint": "eslint --fix",
     "token-gen": "ts-node-dev --respawn --transpileOnly ./app/services/bearer.service.ts",
-    "test": "NODE_ENV=test mocha -r ts-node/register ./app/tests/**/*.ts --recursive --exit --timeout 5000"
+    "test": "NODE_ENV=test jest"
   },
   "dependencies": {
     "axios": "^0.19.0",

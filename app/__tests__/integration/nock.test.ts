@@ -35,7 +35,7 @@ describe('Nock Library Test', (): void => {
 
     request
       .get({ url: 'https://api.github.com/repos/atom/atom/license', resolveWithFullResponse: true, json: true })
-      .then(() => _)
+      .then()
       .catch((error: StatusCodeError): void => {
         expect(error.statusCode).toEqual(400);
         expect(error.error).toHaveProperty('message', 'Unable to proceed the request!');

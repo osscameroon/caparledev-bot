@@ -3,7 +3,7 @@ import { Response } from 'request';
 import request from 'request-promise';
 import querystring from 'querystring';
 
-import { RequestTokenResponse, TwitterError } from '../types';
+import { RequestTokenResponse, TwitterError } from '../types/variables';
 
 import { HASHTAG_TO_TRACK } from '../config';
 import { logger } from '../config/logger';
