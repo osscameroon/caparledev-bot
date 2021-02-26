@@ -2,22 +2,14 @@ import mongoose, { ConnectionOptions } from 'mongoose';
 
 import { DB_CONNECTION_SUCCESS } from '../utils/constants';
 import { logger } from './logger';
+import { DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER } from './env';
 
 mongoose.Promise = global.Promise;
 
 /**
  * Create the connection to the database
- * @async
- *
- * @return Promise<void>
  */
-const dbConnection = async (
-  dbHost: string,
-  dbPort: number,
-  dbName: string,
-  dbUser: string,
-  dbPassword: string,
-): Promise<void> => {
+const dbConnection = async () => {
   const options: ConnectionOptions = {
     useNewUrlParser: true,
     useFindAndModify: false,
@@ -26,10 +18,11 @@ const dbConnection = async (
   };
 
   try {
-    await mongoose.connect(`mongodb://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`, options);
+    await mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`, options);
+
     logger.info(DB_CONNECTION_SUCCESS);
   } catch (err) {
-    logger.error(err.stack);
+    logger.error(err);
   }
 };
 

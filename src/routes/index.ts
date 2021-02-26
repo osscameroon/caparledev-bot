@@ -1,7 +1,4 @@
 import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as path from 'path';
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import { MainRoute } from './main.route';
@@ -9,20 +6,14 @@ import { MainRoute } from './main.route';
 /**
  * Global router configuration of the application
  */
-class Routes {
-  static init(app: express.Application): void {
-    // Express middleware
-    app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(bodyParser.json());
-    app.use(cookieParser());
-    app.use(cors());
+const setupRoutes = (app: express.Application) => {
+  // Express middleware
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
+  app.use(cors());
 
-    // Endpoints
-    app.use('/', new MainRoute().router);
+  // Endpoints
+  app.use('/', new MainRoute().router);
+};
 
-    // Static content
-    app.use(express.static(path.join(__dirname, '../../public')));
-  }
-}
-
-export { Routes };
+export { setupRoutes };
