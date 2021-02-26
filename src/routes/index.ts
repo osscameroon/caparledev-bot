@@ -8,8 +8,6 @@ import { MainRoute } from './main.route';
 
 /**
  * Global router configuration of the application
- *
- * @class
  */
 class Routes {
   /**

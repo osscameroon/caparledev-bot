@@ -3,13 +3,11 @@ import express, { Application } from 'express';
 
 import { IAccount } from './types/models';
 
-import * as config from './config';
+import * as config from './config/env';
 import { logger } from './config/logger';
 import { dbConnection } from './config/dabatase';
 
 import { Routes } from './routes';
-
-import { Redis } from './utils/redis';
 
 import { AccountModel } from './models/account.model';
 
@@ -39,7 +37,7 @@ server.listen(
     await dbConnection(config.DB_HOST, config.DB_PORT, config.DB_NAME, config.DB_USER, config.DB_PASSWORD);
 
     // Initialize connection to Redis database
-    Redis.init(config.REDIS_HOST, config.REDIS_PORT);
+    // Redis.init(config.REDIS_HOST, config.REDIS_PORT);
 
     //
     const account: IAccount | null = await AccountModel.findOne({ accountName: config.BOT_TWITTER_NAME });
@@ -51,7 +49,7 @@ server.listen(
       await MainController.stream();
 
       // Start the daemon to retweet tweets that failed
-      MainController.retweetMonitor();
+      // MainController.retweetMonitor();
     } else {
       logger.error('No account registered! Unable to stream the data!');
     }

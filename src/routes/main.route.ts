@@ -4,8 +4,6 @@ import { MainController } from '../controllers/main.controller';
 
 /**
  * Router configuration for main endpoint
- *
- * @class
  */
 class MainRoute {
   public router: Router;
@@ -25,9 +23,7 @@ class MainRoute {
 
     this.router.get(`${prefix}/auth/url`, MainController.getAuthorizeURL);
 
-    this.router.post(`${prefix}/webhooks/challenge`, MainController.activityUpdate);
-
-    this.router.post(`${prefix}/users/lookup`, MainController.lookupUsers);
+    this.router.post(`${prefix}/users/lookup`, MainController.lookupUser);
   }
 }
 

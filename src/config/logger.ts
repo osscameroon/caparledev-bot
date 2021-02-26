@@ -4,7 +4,7 @@ import bunyan from 'bunyan';
 // @ts-ignore
 import * as Logger from '@types/bunyan';
 
-import * as config from '../config';
+import * as config from './env';
 
 const logFileDir: string | undefined = config.LOG_FILE_DIR;
 const dir: string = logFileDir ? path.join(__dirname, logFileDir) : '../../logs';

@@ -1,25 +1,20 @@
-import Twitter, { RequestParams, ResponseData } from 'twitter';
-import { Response } from 'request';
+import Twitter, { RequestParams } from 'twitter';
 import request from 'request-promise';
 import querystring from 'querystring';
 
 import { RequestTokenResponse, TwitterError } from '../types/variables';
 
-import { HASHTAG_TO_TRACK } from '../config';
+import { HASHTAG_TO_TRACK } from '../config/env';
 import { logger } from '../config/logger';
 
 import { TWEET_PREFIX_KEY, TWIITTER_APP_INIT_SUCCESS } from '../utils/constants';
-import { Redis } from '../utils/redis';
 
 /**
  * This class is responsible to perform the requests needed for our application
  */
 class TwitterService {
-  // Twitter client for Twitter application
-  private static client: Twitter;
-
-  // Twitter client for Twitter bot account
-  private static accountClient: Twitter;
+  private static appClient: Twitter;
+  private static botClient: Twitter;
 
   private static consumerKey: string;
   private static consumerSecret: string;
@@ -32,10 +27,10 @@ class TwitterService {
   private static stream: any;
 
   private static RATE_LIMIT_CODE = 88;
-  private static RATE_LIMIT_KEY = 'cpd_rate_limit';
+  // private static RATE_LIMIT_KEY = 'cpd_rate_limit';
 
   /**
-   * Create an instance of Twitter client for application
+   * Create an instance of Twitter appClient for application
    *
    * @param consumerKey
    * @param consumerSecret
@@ -62,8 +57,8 @@ class TwitterService {
    * Get instance of Twitter application
    */
   public static getClient(): Twitter {
-    if (!TwitterService.client) {
-      TwitterService.client = new Twitter({
+    if (!TwitterService.appClient) {
+      TwitterService.appClient = new Twitter({
         consumer_key: TwitterService.consumerKey,
         consumer_secret: TwitterService.consumerSecret,
         access_token_key: TwitterService.accessTokenKey,
@@ -71,18 +66,18 @@ class TwitterService {
       });
     }
 
-    return TwitterService.client;
+    return TwitterService.appClient;
   }
 
   /**
-   * Create an instance of Twitter client for bot account
+   * Create an instance of Twitter appClient for bot account
    *
    * @param accessToken
    * @param accessTokenSecret
    */
   public static setAccountClient(accessToken: string, accessTokenSecret: string): void {
-    if (!TwitterService.accountClient) {
-      TwitterService.accountClient = new Twitter({
+    if (!TwitterService.botClient) {
+      TwitterService.botClient = new Twitter({
         consumer_key: TwitterService.consumerKey,
         consumer_secret: TwitterService.consumerSecret,
         access_token_key: accessToken,
@@ -246,66 +241,13 @@ class TwitterService {
       // minuteToWait * 1000 because the timestamp is in millisecond
       const whenTweetWillBePossible: number = now.getTime() + minuteToWait * 1000;
 
-      Redis.set(TwitterService.RATE_LIMIT_KEY, whenTweetWillBePossible.toString(), minuteToWait);
+      console.log(whenTweetWillBePossible, tweetId, TWEET_PREFIX_KEY);
+      /*Redis.set(TwitterService.RATE_LIMIT_KEY, whenTweetWillBePossible.toString(), minuteToWait);
 
       if (tweetId) {
         Redis.set(`${TWEET_PREFIX_KEY}${tweetId}`, tweetId);
-      }
+      }*/
     }
-  }
-
-  /**
-   * Make sure we can make a request without face a rate limit error
-   */
-  public static async canMakeCall(): Promise<boolean> {
-    // Get the timestamp at which we are authorized to make a call
-    const nextCallTime: string | null = await Redis.get(TwitterService.RATE_LIMIT_KEY);
-
-    if (!nextCallTime) {
-      return true;
-    }
-
-    const now: Date = new Date();
-    const difference: number = parseInt(nextCallTime, 10) - now.getTime();
-
-    logger.info(`You will be able to retweet in ${difference / (60 * 1000000)} min!`);
-
-    return false;
-  }
-
-  /**
-   * When an user mention the bot account, we use this method to reply to this user according to what he needs
-   *
-   * @param tweetId
-   * @param userScreenName
-   * @param message
-   */
-  public static async replyToUser(tweetId: string, userScreenName: string, message: string): Promise<void> {
-    const canCall: boolean = await TwitterService.canMakeCall();
-
-    // Checks if can make request due to rate limit exceed
-    if (!canCall) {
-      return;
-    }
-
-    const options: RequestParams = {
-      in_reply_to_status_id: tweetId,
-      status: `@${userScreenName} ${message}`,
-    };
-
-    TwitterService.getAccountClient().post(
-      'statuses/update',
-      options,
-      (error: any, data: ResponseData, response: Response) => {
-        if (error) {
-          logger.error(error);
-
-          TwitterService.handleRateLimit(error);
-
-          return;
-        }
-      },
-    );
   }
 
   /**
@@ -314,23 +256,13 @@ class TwitterService {
    * @param tweetId
    */
   public static async retweet(tweetId: string): Promise<void> {
-    const canCall: boolean = await TwitterService.canMakeCall();
+    TwitterService.getAccountClient().post(`statuses/retweet/${tweetId}`, (error: any) => {
+      if (error) {
+        logger.error(error);
 
-    // Checks if can make request due to rate limit exceed
-    if (!canCall) {
-      return;
-    }
-
-    TwitterService.getAccountClient().post(
-      `statuses/retweet/${tweetId}`,
-      (error: any, data: ResponseData, response: Response) => {
-        if (error) {
-          logger.error(error);
-
-          TwitterService.handleRateLimit(error, tweetId);
-        }
-      },
-    );
+        TwitterService.handleRateLimit(error, tweetId);
+      }
+    });
   }
 
   /**
@@ -339,7 +271,7 @@ class TwitterService {
    * https://developer.twitter.com/en/docs/tweets/filter-realtime/api-reference/post-statuses-filter
    */
   public static initializeStream(): void {
-    TwitterService.stream = TwitterService.client.stream('statuses/filter', {
+    TwitterService.stream = TwitterService.appClient.stream('statuses/filter', {
       track: HASHTAG_TO_TRACK,
     });
 
@@ -354,8 +286,8 @@ class TwitterService {
           // return;
         }
 
-        const tweetId: string = event.retweeted_status ? event.retweeted_status.id_str : event.id_str;
-        const tweetKey = `cpd_${tweetId}`;
+        /*const tweetId: string = event.retweeted_status ? event.retweeted_status.id_str : event.id_str;
+        const tweetKey = `cpd_${tweetId}`;*/
 
         /**
          * In the normal behavior, when the bot account retweet a tweet containing the hashtag we are streaming,
@@ -363,7 +295,7 @@ class TwitterService {
          * saying the tweet is already retweeted by the account.
          * To handle this, we save the tweet id in redis and if it exists, we don't send the request to the API anymore
          */
-        Redis.get(tweetKey).then((value: string | null): void => {
+        /*Redis.get(tweetKey).then((value: string | null): void => {
           if (!value) {
             Redis.set(tweetKey, new Date().getTime().toString()).then((value: boolean): void => {
               // The tweet hasn't been retweeted yet so we can proceed
@@ -372,7 +304,7 @@ class TwitterService {
               // TODO Notify registered account
             });
           }
-        });
+        });*/
       },
     );
 
@@ -387,7 +319,7 @@ class TwitterService {
    *
    * @param screenName
    */
-  public static lookupUsers(screenName: string): Promise<any> {
+  public static lookupUser(screenName: string): Promise<any> {
     const options: RequestParams = {
       screen_name: screenName,
     };

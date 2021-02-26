@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tericcabrel/caparledev-bot.git"
+    "url": "https://github.com/osscameroon/caparledev-bot.git"
   },
   "author": {
     "email": "tericcabrel@yahoo.com",
@@ -15,10 +15,9 @@
   },
   "private": false,
   "scripts": {
-    "start": "nodemon --watch '*.ts' --exec 'ts-node' ./app/index.ts",
-    "prod": "tsc && node ./build/index.js",
+    "watch": "tsc -w",
+    "start": "nodemon ./build/index.js",
     "lint": "eslint --fix",
-    "token-gen": "ts-node-dev --respawn --transpileOnly ./app/services/bearer.service.ts",
     "test": "NODE_ENV=test jest"
   },
   "dependencies": {

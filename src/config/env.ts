@@ -1,0 +1,43 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const e: any = process.env;
+
+const ENV: string = e.NODE_ENV;
+const SERVER_PORT = parseInt(e.SERVER_PORT || '7432', 10);
+const LOG_FILE_DIR = e.LOG_FILE_DIR || '';
+const CONSUMER_KEY = e.TWITTER_CONSUMER_KEY || '';
+const CONSUMER_SECRET = e.TWITTER_CONSUMER_SECRET;
+const ACCESS_TOKEN_KEY = e.TWITTER_ACCESS_TOKEN_KEY;
+const ACCESS_TOKEN_SECRET = e.TWITTER_ACCESS_TOKEN_SECRET;
+const TWITTER_CALLBACK_URL = e.TWITTER_CALLBACK_URL || '';
+const DB_HOST = e.DB_HOST || '';
+const DB_PORT = parseInt(e.DB_PORT, 10);
+const DB_NAME = e.DB_NAME || '';
+const DB_USER = e.DB_USER || '';
+const DB_PASSWORD = e.DB_PASSWORD || '';
+const BOT_TWITTER_NAME = e.BOT_TWITTER_NAME || '';
+const HASHTAG_TO_TRACK = e.HASHTAG_TO_TRACK || '';
+const REDIS_HOST = e.REDIS_HOST || '';
+const REDIS_PORT = parseInt(e.REDIS_PORT, 10);
+
+export {
+  ENV,
+  SERVER_PORT,
+  LOG_FILE_DIR,
+  CONSUMER_KEY,
+  CONSUMER_SECRET,
+  ACCESS_TOKEN_KEY,
+  ACCESS_TOKEN_SECRET,
+  TWITTER_CALLBACK_URL,
+  DB_HOST,
+  DB_PORT,
+  DB_NAME,
+  DB_USER,
+  DB_PASSWORD,
+  BOT_TWITTER_NAME,
+  HASHTAG_TO_TRACK,
+  REDIS_HOST,
+  REDIS_PORT,
+};

@@ -1,24 +1,19 @@
 import { Request, Response } from 'express';
 
-import { HASHTAG_TO_TRACK, TWITTER_CALLBACK_URL } from '../config';
+import { HASHTAG_TO_TRACK, TWITTER_CALLBACK_URL } from '../config/env';
 import { logger } from '../config/logger';
 
 import { UserAccessTokenResponse } from '../types/variables';
 import { IAccount } from '../types/models';
-
 import { AccountModel } from '../models/account.model';
-
 import { TwitterService } from '../services/twitter.service';
-
-import { TWEET_PREFIX_KEY } from '../utils/constants';
-import { Redis } from '../utils/redis';
 
 class MainController {
   /**
-   * Welcome message. Can be used for healthcheck
+   * Welcome message. Can be used for health check
    */
-  public static welcome(_req: Request, res: Response): void {
-    res.json({ message: 'Welcome to Caparledev Bot' });
+  public static welcome(_req: Request, res: Response) {
+    return res.json({ message: 'Welcome to Caparledev Bot' });
   }
 
   /**
@@ -90,10 +85,10 @@ class MainController {
   /**
    * Get Twitter user's information
    */
-  public static async lookupUsers(req: Request, res: Response): Promise<void> {
-    const screenNames: string = req.body.screen_names;
+  public static async lookupUser(req: Request, res: Response): Promise<void> {
+    const { screenName } = req.body;
 
-    TwitterService.lookupUsers(screenNames)
+    TwitterService.lookupUser(screenName)
       .then((result: any): void => {
         res.json(result);
       })
@@ -110,33 +105,6 @@ class MainController {
     TwitterService.initializeStream();
 
     logger.info(`You are now streaming hashtag ${HASHTAG_TO_TRACK}`);
-  }
-
-  /**
-   * This methods fetch all tweets who failed to be retweeted due to Rate Limit error and retweet them
-   * The action is performed every 30 minutes
-   */
-  public static async retweetMonitor(): Promise<void> {
-    let working = false;
-
-    setInterval(async (): Promise<void> => {
-      if (!working) {
-        working = true;
-        const keys: string[] = await Redis.keys(TWEET_PREFIX_KEY);
-
-        for (let i = 0; i < keys.length; i += 1) {
-          const tweetId: string | null = await Redis.get(keys[0]);
-
-          if (tweetId) {
-            TwitterService.retweet(tweetId).then(() => {
-              Redis.set(keys[0], '', 1000);
-            });
-          }
-        }
-
-        working = false;
-      }
-    }, 30 * 1000);
   }
 }
 
