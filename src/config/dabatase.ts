@@ -17,13 +17,9 @@ const dbConnection = async () => {
     useUnifiedTopology: true,
   };
 
-  try {
-    await mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`, options);
+  await mongoose.connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`, options);
 
-    logger.info(DB_CONNECTION_SUCCESS);
-  } catch (err) {
-    logger.error(err);
-  }
+  logger.info(DB_CONNECTION_SUCCESS);
 };
 
 export { dbConnection };
