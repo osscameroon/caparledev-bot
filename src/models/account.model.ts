@@ -1,11 +1,23 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Document, Model, Schema } from 'mongoose';
 
-import { IAccount } from '../types/models';
+type AccountDocument = Document & {
+  accountId: string;
+  accountName: string;
+  accessToken: string;
+  accessTokenSecret: string;
+  expirationDate: number;
+};
+
+type AccountInput = {
+  accountId: AccountDocument['accountId'];
+  accountName: AccountDocument['accountName'];
+  accessToken: AccountDocument['accessToken'];
+  accessTokenSecret: AccountDocument['accessTokenSecret'];
+  expirationDate: AccountDocument['expirationDate'];
+};
 
 /**
  * Mongo Schema for Account
- *
- * Contains information about Twitter account (bot account for example)
  */
 const accountSchema: Schema = new Schema(
   {
@@ -49,4 +61,6 @@ const accountSchema: Schema = new Schema(
   },
 );
 
-export class AccountModel extends mongoose.model<IAccount>('Account', accountSchema) {}
+const Account: Model<AccountDocument> = mongoose.model('Account', accountSchema);
+
+export { AccountDocument, Account, AccountInput };

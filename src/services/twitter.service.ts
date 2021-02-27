@@ -30,12 +30,7 @@ class TwitterService {
   // private static RATE_LIMIT_KEY = 'cpd_rate_limit';
 
   /**
-   * Create an instance of Twitter appClient for application
-   *
-   * @param consumerKey
-   * @param consumerSecret
-   * @param accessTokenKey
-   * @param accessTokenSecret
+   * Create an instance of Twitter client for application
    */
   public static init(
     consumerKey: string,
@@ -71,9 +66,6 @@ class TwitterService {
 
   /**
    * Create an instance of Twitter appClient for bot account
-   *
-   * @param accessToken
-   * @param accessTokenSecret
    */
   public static setAccountClient(accessToken: string, accessTokenSecret: string): void {
     if (!TwitterService.botClient) {

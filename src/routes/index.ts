@@ -1,7 +1,7 @@
 import * as express from 'express';
 import cors from 'cors';
 
-import { MainRoute } from './main.route';
+import { mainRoutes } from './main.route';
 
 /**
  * Global router configuration of the application
@@ -12,8 +12,8 @@ const setupRoutes = (app: express.Application) => {
   app.use(express.json());
   app.use(cors());
 
-  // Endpoints
-  app.use('/', new MainRoute().router);
+  // routes
+  app.use('/', mainRoutes());
 };
 
 export { setupRoutes };

@@ -1,8 +1,6 @@
 import http from 'http';
 import express from 'express';
 
-import { IAccount } from './types/models';
-
 import {
   ACCESS_TOKEN_KEY,
   ACCESS_TOKEN_SECRET,
@@ -14,9 +12,9 @@ import {
 import { logger } from './config/logger';
 import { dbConnection } from './config/dabatase';
 import { setupRoutes } from './routes';
-import { AccountModel } from './models/account.model';
+import { Account, AccountDocument } from './models/account.model';
 import { TwitterService } from './services/twitter.service';
-import { MainController } from './controllers/main.controller';
+import { startHashtagStream } from './controllers/main.controller';
 import { redis } from './utils/redis';
 
 const app = express();
@@ -31,15 +29,12 @@ server.listen(SERVER_PORT, async () => {
 
   TwitterService.init(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET);
 
-  const account: IAccount | null = await AccountModel.findOne({ accountName: BOT_TWITTER_NAME });
+  const account: AccountDocument | null = await Account.findOne({ accountName: BOT_TWITTER_NAME });
 
   if (account) {
     TwitterService.setAccountClient(account.accessToken, account.accessTokenSecret);
 
-    await MainController.stream();
-
-    // Start the daemon to retweet tweets that failed
-    // MainController.retweetMonitor();
+    startHashtagStream();
   } else {
     logger.error('No account registered! Unable to stream the data!');
   }

@@ -1,30 +1,24 @@
 import { Router } from 'express';
 
-import { MainController } from '../controllers/main.controller';
+import * as mainController from '../controllers/main.controller';
 
 /**
  * Router configuration for main endpoint
  */
-class MainRoute {
-  public router: Router;
+const mainRoutes = () => {
+  const router = Router();
 
-  constructor() {
-    this.router = Router();
+  const prefix = '';
 
-    this.routes();
-  }
+  router.get(`${prefix}/`, mainController.welcome);
 
-  routes(): void {
-    const prefix = '';
+  router.get(`${prefix}/auth/callback`, mainController.handleUserAuthenticationCallback);
 
-    this.router.get(`${prefix}/`, MainController.welcome);
+  router.get(`${prefix}/auth/url`, mainController.generateAuthorizeURL);
 
-    this.router.get(`${prefix}/auth/callback`, MainController.authCallback);
+  router.get(`${prefix}/users/:screenName/lookup`, mainController.findUserByScreenName);
 
-    this.router.get(`${prefix}/auth/url`, MainController.getAuthorizeURL);
+  return router;
+};
 
-    this.router.post(`${prefix}/users/lookup`, MainController.lookupUser);
-  }
-}
-
-export { MainRoute };
+export { mainRoutes };
