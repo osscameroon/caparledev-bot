@@ -1,18 +1,23 @@
 import { Request, Response } from 'express';
 
-import { HASHTAG_TO_TRACK, TWITTER_CALLBACK_URL } from '../config/env';
+import { BOT_ACCESS_TOKEN_KEY, BOT_ACCESS_TOKEN_SECRET, HASHTAG_TO_TRACK, TWITTER_CALLBACK_URL } from '../config/env';
 import { logger } from '../config/logger';
 
-import { UserAccessTokenResponse } from '../types/variables';
-import { Account, AccountInput, AccountDocument } from '../models/account.model';
-import { TwitterService } from '../services/twitter.service';
+import {
+  getTemporaryOauthToken,
+  getUserAccessToken,
+  initializeStream,
+  lookupUser,
+  processAuthorization,
+  resetTemporaryToken,
+} from '../services/twitter.service';
 
 const welcome = (_req: Request, res: Response) => {
   return res.json({ message: 'Welcome to Caparledev Bot' });
 };
 
 const generateAuthorizeURL = async (_req: Request, res: Response) => {
-  const url: string = await TwitterService.processAuthorization(TWITTER_CALLBACK_URL);
+  const url: string = await processAuthorization(TWITTER_CALLBACK_URL);
 
   return res.json({ url });
 };
@@ -26,55 +31,26 @@ const handleUserAuthenticationCallback = async (req: Request, res: Response) => 
     return res.status(422).json({ error: 'The oauth token or oauth verifier is missing!' });
   }
 
-  if (oauth_token !== TwitterService.getTempOauthToken()) {
+  const oauthTokenFromRedis = await getTemporaryOauthToken();
+
+  if (oauth_token !== oauthTokenFromRedis) {
     return res.status(422).json({ error: "The oauth token doesn't match!" });
   }
 
-  const response: UserAccessTokenResponse = await TwitterService.getUserAccessToken(oauth_token, oauth_verifier);
+  const response = await getUserAccessToken(oauth_token, oauth_verifier);
 
-  const oauthToken: string = response.oauth_token;
-  const oauthTokenSecret: string = response.oauth_token_secret;
+  const oauthToken = response.oauth_token;
+  const oauthTokenSecret = response.oauth_token_secret;
 
-  if (oauthToken && oauthTokenSecret) {
-    const account: AccountDocument | null = await Account.findOne({ accountId: response.user_id });
+  await resetTemporaryToken();
 
-    if (account) {
-      await Account.findByIdAndUpdate(
-        { _id: account._id },
-        {
-          accountName: response.screen_name,
-          accessToken: oauthToken,
-          accessTokenSecret: oauthTokenSecret,
-        },
-      );
-
-      console.log('Account updated !');
-    } else {
-      const input: AccountInput = {
-        accountId: response.user_id,
-        accountName: response.screen_name,
-        accessToken: oauthToken,
-        accessTokenSecret: oauthTokenSecret,
-        expirationDate: 1000,
-      };
-
-      await Account.create([input]);
-
-      console.log('Account created !');
-
-      TwitterService.setAccountClient(oauthToken, oauthTokenSecret);
-    }
-
-    return res.json({ message: 'success' });
-  } else {
-    return res.status(400).json({ message: 'Failed to retrieve access token' });
-  }
+  return res.json({ oauthToken, oauthTokenSecret });
 };
 
 const findUserByScreenName = async (req: Request, res: Response) => {
   const { screenName } = req.params;
 
-  const response = await TwitterService.lookupUser(screenName).catch((error) => {
+  const response = await lookupUser(screenName).catch((error) => {
     logger.error(error);
 
     return null;
@@ -84,9 +60,13 @@ const findUserByScreenName = async (req: Request, res: Response) => {
 };
 
 const startHashtagStream = () => {
-  TwitterService.initializeStream();
+  if (BOT_ACCESS_TOKEN_KEY && BOT_ACCESS_TOKEN_SECRET) {
+    initializeStream();
 
-  logger.info(`You are now streaming hashtag ${HASHTAG_TO_TRACK}`);
+    logger.info(`You are now streaming hashtag ${HASHTAG_TO_TRACK}`);
+  } else {
+    logger.error('Bot access token not found. Unable to stream the data!');
+  }
 };
 
 export { welcome, generateAuthorizeURL, handleUserAuthenticationCallback, findUserByScreenName, startHashtagStream };
