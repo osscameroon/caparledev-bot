@@ -14,7 +14,7 @@ const welcome = (_req: Request, res: Response) => {
 const generateAuthorizeURL = async (_req: Request, res: Response) => {
   const url: string = await TwitterService.processAuthorization(TWITTER_CALLBACK_URL);
 
-  res.json({ url });
+  return res.json({ url });
 };
 
 const handleUserAuthenticationCallback = async (req: Request, res: Response) => {
@@ -23,11 +23,11 @@ const handleUserAuthenticationCallback = async (req: Request, res: Response) => 
   const { oauth_token, oauth_verifier }: any = req.query;
 
   if (!oauth_token || !oauth_verifier) {
-    res.status(422).json({ error: 'The oauth token or oauth verifier is missing!' });
+    return res.status(422).json({ error: 'The oauth token or oauth verifier is missing!' });
   }
 
   if (oauth_token !== TwitterService.getTempOauthToken()) {
-    res.status(422).json({ error: "The oauth token doesn't match!" });
+    return res.status(422).json({ error: "The oauth token doesn't match!" });
   }
 
   const response: UserAccessTokenResponse = await TwitterService.getUserAccessToken(oauth_token, oauth_verifier);
@@ -65,9 +65,9 @@ const handleUserAuthenticationCallback = async (req: Request, res: Response) => 
       TwitterService.setAccountClient(oauthToken, oauthTokenSecret);
     }
 
-    res.json({ message: 'success' });
+    return res.json({ message: 'success' });
   } else {
-    res.status(400).json({ message: 'Failed to retrieve access token' });
+    return res.status(400).json({ message: 'Failed to retrieve access token' });
   }
 };
 

@@ -308,8 +308,6 @@ class TwitterService {
 
   /**
    * Get user account information through his screenName
-   *
-   * @param screenName
    */
   public static lookupUser(screenName: string): Promise<any> {
     const options: RequestParams = {
