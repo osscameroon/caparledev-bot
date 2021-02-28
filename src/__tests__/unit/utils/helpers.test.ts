@@ -1,5 +1,5 @@
 import { StreamResponse } from '../../../types/variables';
-import { streamResponseToTweetInput } from '../../../utils/helpers';
+import { transformStreamResponseToTweetInput } from '../../../utils/helpers';
 
 describe('Test Utils/Helpers', () => {
   it('should transform stream response to tweet input', () => {
@@ -29,7 +29,7 @@ describe('Test Utils/Helpers', () => {
       ],
     };
 
-    const tweetInput = streamResponseToTweetInput(streamResponse);
+    const tweetInput = transformStreamResponseToTweetInput(streamResponse);
 
     expect(tweetInput).toMatchObject({
       id: streamResponse.data.id,

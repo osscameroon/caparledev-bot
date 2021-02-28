@@ -8,6 +8,8 @@ import { APP_BEARER_TOKEN, HASHTAG_TO_TRACK } from '../config/env';
 import { CreateStreamRule, StreamResponse, StreamRule } from '../types/variables';
 import { logger } from '../config/logger';
 import { retweet } from './twitter.service';
+import { onGenericError, transformStreamResponseToTweetInput } from '../utils/helpers';
+import { Tweet } from '../models/tweet.model';
 
 const baseStreamURL = 'https://api.twitter.com/2/tweets/search/stream';
 const streamRulesURL = `${baseStreamURL}/rules`;
@@ -96,6 +98,10 @@ const onStreamDataReceived = (data: any) => {
     logger.info(streamTweet);
 
     retweet(streamTweet.data.id);
+
+    const tweetInput = transformStreamResponseToTweetInput(streamTweet);
+
+    Tweet.create([tweetInput]).then().catch(onGenericError);
   } catch (e) {
     // Keep alive signal received. Do nothing.
   }
