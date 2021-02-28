@@ -19,7 +19,8 @@
     "start": "nodemon ./build/index.js",
     "lint": "eslint --fix",
     "test": "NODE_ENV=test jest",
-    "loc": "git ls-files | grep -Ev '.lock|.example|.gitignore' | xargs wc -l"
+    "loc": "git ls-files | grep -Ev '.lock|.example|.gitignore' | xargs wc -l",
+    "bearer:token": "ts-node ./src/utils/bearerToken.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -49,6 +50,7 @@
     "@types/twitter": "^1.7.0",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
+    "axios": "^0.21.1",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
@@ -58,6 +60,7 @@
     "nock": "^12.0.3",
     "nodemon": "^1.19.1",
     "ts-jest": "^26.5.1",
+    "ts-node": "^9.1.1",
     "typescript": "^4.1.5"
   },
   "husky": {
