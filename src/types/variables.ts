@@ -1,11 +1,3 @@
-export type Account = {
-  accountId: string;
-  accountName: string;
-  accessToken: string;
-  accessTokenSecret: string;
-  expirationDate: number; // timestamp
-};
-
 export type UserAccessTokenResponse = {
   oauth_token: string;
   oauth_token_secret: string;
