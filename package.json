@@ -18,7 +18,8 @@
     "watch": "tsc -w",
     "start": "nodemon ./build/index.js",
     "lint": "eslint --fix",
-    "test": "NODE_ENV=test jest"
+    "test": "NODE_ENV=test jest",
+    "loc": "git ls-files | grep -Ev '.lock|.example|.gitignore' | xargs wc -l"
   },
   "dependencies": {
     "cors": "^2.8.5",
