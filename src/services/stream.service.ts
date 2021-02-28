@@ -2,12 +2,12 @@
 // https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/quick-start
 import request, { RequestPromiseOptions } from 'request-promise';
 import needle from 'needle';
+import * as querystring from 'querystring';
 
 import { APP_BEARER_TOKEN, HASHTAG_TO_TRACK } from '../config/env';
-import { CreateStreamRule, StreamRule } from '../types/variables';
+import { CreateStreamRule, StreamResponse, StreamRule } from '../types/variables';
 import { logger } from '../config/logger';
-import * as querystring from 'querystring';
-// import { retweet } from './twitter.service';
+import { retweet } from './twitter.service';
 
 const baseStreamURL = 'https://api.twitter.com/2/tweets/search/stream';
 const streamRulesURL = `${baseStreamURL}/rules`;
@@ -91,13 +91,11 @@ const setRules = async () => {
 
 const onStreamDataReceived = (data: any) => {
   try {
-    const parsedData = JSON.parse(data as string);
+    const streamTweet: StreamResponse = JSON.parse(data as string);
 
-    logger.info(parsedData);
+    logger.info(streamTweet);
 
-    /*const tweetId: string = parsedData.retweeted_status ? parsedData.retweeted_status.id_str : parsedData.id_str;
-
-    retweet(tweetId);*/
+    retweet(streamTweet.data.id);
   } catch (e) {
     // Keep alive signal received. Do nothing.
   }
@@ -131,14 +129,10 @@ const initializeStream = async () => {
 
   try {
     currentRules = await getAllRules();
-    console.log(currentRules);
 
     await deleteAllRules(currentRules);
-    console.log('Deleted');
 
-    const r = await setRules();
-
-    console.log(r);
+    await setRules();
   } catch (e) {
     console.error(e);
     process.exit(-1);
@@ -148,7 +142,6 @@ const initializeStream = async () => {
   // To avoid rate limits, this logic implements exponential backoff, so the wait time
   // will increase if the client cannot reconnect to the stream.
 
-  console.log('start stream !');
   const filteredStream = streamConnect();
   let timeout = 0;
 
