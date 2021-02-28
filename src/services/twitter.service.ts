@@ -10,7 +10,6 @@ import {
   APP_CONSUMER_SECRET,
   BOT_ACCESS_TOKEN_KEY,
   BOT_ACCESS_TOKEN_SECRET,
-  HASHTAG_TO_TRACK,
 } from '../config/env';
 import { logger } from '../config/logger';
 import { RATE_LIMIT_CODE, TWEET_PREFIX_KEY } from '../utils/constants';
@@ -186,7 +185,7 @@ const retweet = (tweetId: string) => {
  *
  * https://developer.twitter.com/en/docs/tweets/filter-realtime/api-reference/post-statuses-filter
  */
-const initializeStream = () => {
+/*const initializeStream = () => {
   const stream = createApplicationClient().stream('statuses/filter', {
     track: HASHTAG_TO_TRACK,
   });
@@ -209,7 +208,7 @@ const initializeStream = () => {
     logger.error('Stream Error!');
     logger.error(error);
   });
-};
+};*/
 
 /**
  * Get user account information through his screenName
@@ -228,6 +227,6 @@ export {
   getUserInfo,
   getTemporaryOauthToken,
   resetTemporaryToken,
-  initializeStream,
+  retweet,
   lookupUser,
 };

@@ -31,4 +31,18 @@ export type TwitterError = {
 export type EnhancedLogger = {
   info: (output: unknown) => void;
   error: (output: unknown) => void;
+  warn: (output: unknown) => void;
+};
+
+export type StreamRule = {
+  id: string;
+  value: string;
+  tag: string;
+};
+
+export type CreateStreamRule = {
+  data: StreamRule[];
+  meta: {
+    sent: Date;
+  };
 };
