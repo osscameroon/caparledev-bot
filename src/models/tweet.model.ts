@@ -64,7 +64,6 @@ const tweetSchema: Schema = new Schema(
     user: userSchema,
   },
   {
-    _id: false,
     timestamps: true,
     collection: 'tweets',
   },

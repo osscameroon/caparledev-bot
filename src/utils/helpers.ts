@@ -1,7 +1,8 @@
 import { TweetInput } from '../models/tweet.model';
 import { StreamResponse } from '../types/variables';
+import { logger } from '../config/logger';
 
-export const streamResponseToTweetInput = (streamResponse: StreamResponse): TweetInput => {
+export const transformStreamResponseToTweetInput = (streamResponse: StreamResponse): TweetInput => {
   const {
     data: { author_id, created_at, id, text },
     includes: {
@@ -22,3 +23,5 @@ export const streamResponseToTweetInput = (streamResponse: StreamResponse): Twee
     },
   };
 };
+
+export const onGenericError = (error: unknown) => logger.error(error);
