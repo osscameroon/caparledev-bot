@@ -6,11 +6,11 @@ import { logger } from '../config/logger';
 import {
   getTemporaryOauthToken,
   getUserAccessToken,
-  initializeStream,
   lookupUser,
   processAuthorization,
   resetTemporaryToken,
 } from '../services/twitter.service';
+import { initializeStream } from '../services/stream.service';
 
 const welcome = (_req: Request, res: Response) => {
   return res.json({ message: 'Welcome to Caparledev Bot' });
@@ -23,8 +23,6 @@ const generateAuthorizeURL = async (_req: Request, res: Response) => {
 };
 
 const handleUserAuthenticationCallback = async (req: Request, res: Response) => {
-  console.log('Auth callback called!');
-
   const { oauth_token, oauth_verifier }: any = req.query;
 
   if (!oauth_token || !oauth_verifier) {
@@ -59,9 +57,9 @@ const findUserByScreenName = async (req: Request, res: Response) => {
   return res.json(response);
 };
 
-const startHashtagStream = () => {
+const startHashtagStream = async () => {
   if (ENABLE_STREAM) {
-    initializeStream();
+    await initializeStream();
 
     logger.info(`You are now streaming hashtag ${HASHTAG_TO_TRACK}`);
   }
