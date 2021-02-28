@@ -46,3 +46,26 @@ export type CreateStreamRule = {
     sent: Date;
   };
 };
+
+type MatchingRule = Omit<StreamRule, 'value'>;
+
+type User = {
+  location: string;
+  created_at: string;
+  name: string;
+  id: string;
+  username: string;
+};
+
+export type StreamResponse = {
+  data: {
+    id: string;
+    created_at: string;
+    text: string;
+    author_id: string;
+  };
+  includes: {
+    users: User[];
+  };
+  matching_rules: MatchingRule[];
+};

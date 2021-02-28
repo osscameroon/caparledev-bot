@@ -120,22 +120,6 @@ const getUserAccessToken = async (oauthToken: string, oauthVerifier: string) => 
 };
 
 /**
- * Get user's account information through his authorize token
- */
-const getUserInfo = (oauthToken: string) => {
-  const options: RequestPromiseOptions = {
-    oauth: {
-      token: oauthToken,
-      consumer_key: APP_CONSUMER_KEY,
-    },
-    json: true,
-    resolveWithFullResponse: true,
-  };
-
-  return request.get('https://api.twitter.com/1.1/account/verify_credentials.json', options);
-};
-
-/**
  * Get temporary token created for the user account login with Twitter
  */
 const getTemporaryOauthToken = async () => {
@@ -181,36 +165,6 @@ const retweet = (tweetId: string) => {
 };
 
 /**
- * Use of Twitter Stream API listen for tweet with the hastag #caparledev and retweet them
- *
- * https://developer.twitter.com/en/docs/tweets/filter-realtime/api-reference/post-statuses-filter
- */
-/*const initializeStream = () => {
-  const stream = createApplicationClient().stream('statuses/filter', {
-    track: HASHTAG_TO_TRACK,
-  });
-
-  stream.on('data', async (event: any) => {
-    logger.info(event);
-
-    if (!event.text.toLowerCase().includes(HASHTAG_TO_TRACK.toLowerCase())) {
-      console.log('No Retweet!\n');
-
-      return;
-    }
-
-    const tweetId: string = event.retweeted_status ? event.retweeted_status.id_str : event.id_str;
-
-    retweet(tweetId);
-  });
-
-  stream.on('error', (error: any) => {
-    logger.error('Stream Error!');
-    logger.error(error);
-  });
-};*/
-
-/**
  * Get user account information through his screenName
  */
 const lookupUser = (screenName: string) => {
@@ -221,12 +175,4 @@ const lookupUser = (screenName: string) => {
   return createApplicationClient().get('users/lookup', options);
 };
 
-export {
-  processAuthorization,
-  getUserAccessToken,
-  getUserInfo,
-  getTemporaryOauthToken,
-  resetTemporaryToken,
-  retweet,
-  lookupUser,
-};
+export { processAuthorization, getUserAccessToken, getTemporaryOauthToken, resetTemporaryToken, retweet, lookupUser };
