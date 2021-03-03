@@ -8,9 +8,10 @@ import {
   getUserAccessToken,
   lookupUser,
   processAuthorization,
-  resetTemporaryToken,
 } from '../services/twitter.service';
 import { initializeStream } from '../services/stream.service';
+import { Setting } from '../models/setting.model';
+import { TEMPORARY_OAUTH_TOKEN } from '../utils/constants';
 
 const welcome = (_req: Request, res: Response) => {
   return res.json({ message: 'Welcome to Caparledev Bot' });
@@ -40,7 +41,7 @@ const handleUserAuthenticationCallback = async (req: Request, res: Response) => 
   const oauthToken = response.oauth_token;
   const oauthTokenSecret = response.oauth_token_secret;
 
-  await resetTemporaryToken();
+  await Setting.updateOne({ key: TEMPORARY_OAUTH_TOKEN }, { value: null });
 
   return res.json({ oauthToken, oauthTokenSecret });
 };

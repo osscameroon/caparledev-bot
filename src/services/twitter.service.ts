@@ -12,8 +12,8 @@ import {
   BOT_ACCESS_TOKEN_SECRET,
 } from '../config/env';
 import { logger } from '../config/logger';
-import { RATE_LIMIT_CODE, TWEET_PREFIX_KEY } from '../utils/constants';
-import { RedisClient } from '../utils/redis';
+import { RATE_LIMIT_CODE, TEMPORARY_OAUTH_TOKEN, TWEET_PREFIX_KEY } from '../utils/constants';
+import { Setting } from '../models/setting.model';
 
 const createApplicationClient = () => {
   return new Twitter({
@@ -85,12 +85,7 @@ const processAuthorization = async (callbackUrl: string) => {
   const bodyParsed: RequestTokenResponse = querystring.parse(response.body) as any;
 
   // Store temporary token to performs matching with the token received through the callback URL
-  RedisClient.instance()
-    .multi()
-    .set('tempOauthToken', bodyParsed.oauth_token)
-    .set('tempOauthTokenSecret', bodyParsed.oauth_token_secret)
-    .exec()
-    .then();
+  Setting.create([{ key: TEMPORARY_OAUTH_TOKEN, value: bodyParsed.oauth_token }]).then();
 
   return getAuthorizeURL(bodyParsed.oauth_token);
 };
@@ -123,14 +118,7 @@ const getUserAccessToken = async (oauthToken: string, oauthVerifier: string) => 
  * Get temporary token created for the user account login with Twitter
  */
 const getTemporaryOauthToken = async () => {
-  return await RedisClient.instance().get('tempOauthToken');
-};
-
-/**
- * Reset Temporary token when the process of authentication with Twitter is completed
- */
-const resetTemporaryToken = async () => {
-  await RedisClient.instance().del('tempOauthToken', 'tempOauthTokenSecret');
+  return Setting.findOne({ key: TEMPORARY_OAUTH_TOKEN });
 };
 
 /**
@@ -175,4 +163,4 @@ const lookupUser = (screenName: string) => {
   return createApplicationClient().get('users/lookup', options);
 };
 
-export { processAuthorization, getUserAccessToken, getTemporaryOauthToken, resetTemporaryToken, retweet, lookupUser };
+export { processAuthorization, getUserAccessToken, getTemporaryOauthToken, retweet, lookupUser };
