@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import * as mainController from '../controllers/main.controller';
+import { searchTweet } from '../services/twitter.service';
 
 /**
  * Router configuration for main endpoint
@@ -17,6 +18,12 @@ const mainRoutes = () => {
   router.get(`${prefix}/auth/url`, mainController.generateAuthorizeURL);
 
   router.get(`${prefix}/users/:screenName/lookup`, mainController.findUserByScreenName);
+
+  router.get('/search', async (_req, res) => {
+    const result = await searchTweet();
+
+    return res.json(result);
+  });
 
   return router;
 };
