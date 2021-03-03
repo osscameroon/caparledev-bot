@@ -6,7 +6,6 @@ import { logger } from './config/logger';
 import { dbConnection } from './config/dabatase';
 import { setupRoutes } from './routes';
 import { startHashtagStream } from './controllers/main.controller';
-import { RedisClient } from './utils/redis';
 
 const app = express();
 
@@ -17,9 +16,7 @@ const server = http.createServer(app);
 server.listen(SERVER_PORT, async () => {
   await dbConnection();
 
-  RedisClient.instance();
-
-  startHashtagStream();
+  startHashtagStream().then();
 
   logger.info(`Server started - ${SERVER_PORT}`);
 });
