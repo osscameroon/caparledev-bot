@@ -2,7 +2,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 
 type SettingDocument = Document & {
   key: string;
-  value: string;
+  value: string | null;
 };
 
 type SettingInput = {
@@ -19,7 +19,7 @@ const settingSchema = new Schema(
     },
     value: {
       type: String,
-      required: true,
+      default: null,
     },
   },
   {
