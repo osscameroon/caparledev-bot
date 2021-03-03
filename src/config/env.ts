@@ -22,8 +22,6 @@ const DB_NAME = e.DB_NAME || '';
 const DB_USER = e.DB_USER || '';
 const DB_PASSWORD = e.DB_PASSWORD || '';
 const HASHTAG_TO_TRACK = e.HASHTAG_TO_TRACK || '';
-const REDIS_HOST = e.REDIS_HOST || '';
-const REDIS_PORT = parseInt(e.REDIS_PORT, 10);
 
 export {
   ENV,
@@ -44,6 +42,4 @@ export {
   DB_USER,
   DB_PASSWORD,
   HASHTAG_TO_TRACK,
-  REDIS_HOST,
-  REDIS_PORT,
 };
