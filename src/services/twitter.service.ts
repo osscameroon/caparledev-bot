@@ -6,10 +6,12 @@ import { RequestTokenResponse, TwitterError, UserAccessTokenResponse } from '../
 import {
   APP_ACCESS_TOKEN_KEY,
   APP_ACCESS_TOKEN_SECRET,
+  APP_BEARER_TOKEN,
   APP_CONSUMER_KEY,
   APP_CONSUMER_SECRET,
   BOT_ACCESS_TOKEN_KEY,
   BOT_ACCESS_TOKEN_SECRET,
+  HASHTAG_TO_TRACK,
 } from '../config/env';
 import { logger } from '../config/logger';
 import {
@@ -176,11 +178,31 @@ const lookupUser = (screenName: string) => {
   return createApplicationClient().get('users/lookup', options);
 };
 
+const searchTweet = async () => {
+  const params = {
+    query: `${HASHTAG_TO_TRACK} -is:retweet`,
+    // query: `#caparledev -is:retweet -retweets_of:rhakgnar (is:quote OR is:reply)`,
+    'tweet.fields': 'id,text,author_id,created_at',
+  };
+
+  const response = await needle('get', 'https://api.twitter.com/2/tweets/search/recent', params, {
+    headers: {
+      'User-Agent': 'v2RecentSearchJS',
+      authorization: `Bearer ${APP_BEARER_TOKEN}`,
+    },
+  });
+
+  console.log(response.body);
+
+  return response.body;
+};
+
 export {
   processAuthorization,
   getUserAccessToken,
   getTemporaryOauthToken,
-  handleRetweetRateLimit,
+  resetTemporaryToken,
   retweet,
   lookupUser,
+  searchTweet,
 };
