@@ -4,6 +4,7 @@ type TweetDocument = Document & {
   id: string;
   text: string;
   createDate: Date;
+  retweeted: boolean;
   user: {
     id: string;
     username: string;
@@ -17,6 +18,7 @@ type TweetInput = {
   id: TweetDocument['id'];
   text: TweetDocument['text'];
   createDate: TweetDocument['createDate'];
+  retweeted: TweetDocument['retweeted'];
   user: TweetDocument['user'];
 };
 
@@ -60,6 +62,10 @@ const tweetSchema: Schema = new Schema(
     createDate: {
       type: Date,
       require: true,
+    },
+    retweeted: {
+      type: Boolean,
+      default: false,
     },
     user: userSchema,
   },

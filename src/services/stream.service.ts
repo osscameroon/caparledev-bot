@@ -7,7 +7,7 @@ import * as querystring from 'querystring';
 import { APP_BEARER_TOKEN, HASHTAG_TO_TRACK } from '../config/env';
 import { CreateStreamRule, StreamResponse, StreamRule } from '../types/variables';
 import { logger } from '../config/logger';
-import { retweet } from './twitter.service';
+import { handleRetweetRateLimit, retweet } from './twitter.service';
 import { onGenericError, transformStreamResponseToTweetInput } from '../utils/helpers';
 import { Tweet } from '../models/tweet.model';
 import { API_TWITTER_BASE_URL, STREAM_TIMEOUT_MESSAGE } from '../utils/constants';
@@ -98,11 +98,18 @@ const onStreamDataReceived = (data: any) => {
 
     logger.info(streamTweet);
 
-    retweet(streamTweet.data.id);
-
     const tweetInput = transformStreamResponseToTweetInput(streamTweet);
 
-    Tweet.create([tweetInput]).then().catch(onGenericError);
+    retweet(streamTweet.data.id)
+      .then(() => {
+        tweetInput.retweeted = true;
+        Tweet.create([tweetInput]).then().catch(onGenericError);
+      })
+      .catch((error) => {
+        Tweet.create([tweetInput]).then().catch(onGenericError);
+
+        handleRetweetRateLimit(error);
+      });
   } catch (e) {
     // Keep alive signal received. Do nothing.
   }

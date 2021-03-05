@@ -131,7 +131,7 @@ const getTemporaryOauthToken = async () => {
  * When a request to Twitter API fails we need use this method to check if the fail is due to rate limit
  * If it's the case, store the tweetId and wait 15 min to retry the call
  */
-const handleRateLimit = (error: any, tweetId?: string) => {
+const handleRetweetRateLimit = (error: any) => {
   // { "errors": [ { "code": 88, "message": "Rate limit exceeded" } ] }
   const obj: TwitterError = error;
 
@@ -141,7 +141,7 @@ const handleRateLimit = (error: any, tweetId?: string) => {
     // minuteToWait * 1000 because the timestamp is in millisecond
     const whenTweetWillBePossible: number = now.getTime() + minuteToWait * 1000;
 
-    console.log(whenTweetWillBePossible, tweetId, TWEET_PREFIX_KEY);
+    console.log(whenTweetWillBePossible, TWEET_PREFIX_KEY);
   }
 };
 
@@ -149,12 +149,16 @@ const handleRateLimit = (error: any, tweetId?: string) => {
  * Retweet a tweet
  */
 const retweet = (tweetId: string) => {
-  createBotClient().post(`statuses/retweet/${tweetId}`, (error) => {
-    if (error) {
-      logger.error(error);
+  return new Promise((resolve, reject) => {
+    createBotClient().post(`statuses/retweet/${tweetId}`, (error) => {
+      if (error) {
+        logger.error(error);
 
-      handleRateLimit(error, tweetId);
-    }
+        reject(error);
+      }
+
+      return resolve(true);
+    });
   });
 };
 
@@ -169,4 +173,11 @@ const lookupUser = (screenName: string) => {
   return createApplicationClient().get('users/lookup', options);
 };
 
-export { processAuthorization, getUserAccessToken, getTemporaryOauthToken, retweet, lookupUser };
+export {
+  processAuthorization,
+  getUserAccessToken,
+  getTemporaryOauthToken,
+  handleRetweetRateLimit,
+  retweet,
+  lookupUser,
+};
