@@ -9,7 +9,7 @@ mongoose.Promise = global.Promise;
 /**
  * Create the connection to the database
  */
-const dbConnection = async () => {
+const connectToDatabase = async () => {
   const options: ConnectionOptions = {
     useNewUrlParser: true,
     useFindAndModify: false,
@@ -22,4 +22,4 @@ const dbConnection = async () => {
   logger.info(DB_CONNECTION_SUCCESS);
 };
 
-export { dbConnection };
+export { connectToDatabase };

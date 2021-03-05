@@ -30,4 +30,16 @@ const settingSchema = new Schema(
 
 const Setting: Model<SettingDocument> = mongoose.model('Setting', settingSchema);
 
-export { SettingDocument, SettingInput, Setting };
+const findOrCreateSetting = async (key: string, value: string | null) => {
+  const setting = await Setting.findOne({ key });
+
+  if (!setting) {
+    const [setting] = await Setting.create([{ key, value }]);
+
+    return setting;
+  }
+
+  return setting;
+};
+
+export { SettingDocument, SettingInput, Setting, findOrCreateSetting };
