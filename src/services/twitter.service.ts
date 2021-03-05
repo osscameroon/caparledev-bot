@@ -12,7 +12,12 @@ import {
   BOT_ACCESS_TOKEN_SECRET,
 } from '../config/env';
 import { logger } from '../config/logger';
-import { API_TWITTER_BASE_URL, RATE_LIMIT_CODE, TEMPORARY_OAUTH_TOKEN, TWEET_PREFIX_KEY } from '../utils/constants';
+import {
+  API_TWITTER_BASE_URL,
+  RATE_LIMIT_CODE,
+  RATE_LIMIT_TIME_SETTING_KEY,
+  TEMPORARY_OAUTH_TOKEN_SETTING_KEY,
+} from '../utils/constants';
 import { Setting } from '../models/setting.model';
 
 const createApplicationClient = () => {
@@ -85,7 +90,7 @@ const processAuthorization = async (callbackUrl: string) => {
   const bodyParsed: RequestTokenResponse = querystring.parse(response.body) as any;
 
   // Store temporary token to performs matching with the token received through the callback URL
-  Setting.create([{ key: TEMPORARY_OAUTH_TOKEN, value: bodyParsed.oauth_token }]).then();
+  Setting.create([{ key: TEMPORARY_OAUTH_TOKEN_SETTING_KEY, value: bodyParsed.oauth_token }]).then();
 
   return getAuthorizeURL(bodyParsed.oauth_token);
 };
@@ -118,7 +123,7 @@ const getUserAccessToken = async (oauthToken: string, oauthVerifier: string) => 
  * Get temporary token created for the user account login with Twitter
  */
 const getTemporaryOauthToken = async () => {
-  const setting = await Setting.findOne({ key: TEMPORARY_OAUTH_TOKEN });
+  const setting = await Setting.findOne({ key: TEMPORARY_OAUTH_TOKEN_SETTING_KEY });
 
   if (setting) {
     return setting.value;
@@ -136,12 +141,10 @@ const handleRetweetRateLimit = (error: any) => {
   const obj: TwitterError = error;
 
   if (obj.errors && obj.errors[0].code === RATE_LIMIT_CODE) {
-    const now: Date = new Date();
-    const minuteToWait: number = 15 * 60 * 1000;
-    // minuteToWait * 1000 because the timestamp is in millisecond
-    const whenTweetWillBePossible: number = now.getTime() + minuteToWait * 1000;
+    const hoursToWait = 3 * 60 * 60 * 1000;
+    const rateLimitExpireTimestamp = new Date().getTime() + hoursToWait;
 
-    console.log(whenTweetWillBePossible, TWEET_PREFIX_KEY);
+    Setting.create([{ key: RATE_LIMIT_TIME_SETTING_KEY, value: rateLimitExpireTimestamp }]).then();
   }
 };
 
