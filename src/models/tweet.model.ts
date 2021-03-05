@@ -5,13 +5,7 @@ type TweetDocument = Document & {
   text: string;
   createDate: Date;
   retweeted: boolean;
-  user: {
-    id: string;
-    username: string;
-    name: string;
-    createDate: Date;
-    location: string | null;
-  };
+  author: string;
 };
 
 type TweetInput = {
@@ -19,31 +13,8 @@ type TweetInput = {
   text: TweetDocument['text'];
   createDate: TweetDocument['createDate'];
   retweeted: TweetDocument['retweeted'];
-  user: TweetDocument['user'];
+  author: TweetDocument['author'];
 };
-
-const userSchema: Schema = new Schema({
-  id: {
-    type: String,
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  createDate: {
-    type: Date,
-    required: true,
-  },
-  location: {
-    type: String,
-    default: null,
-  },
-});
 
 /**
  * Mongo Schema for Tweet
@@ -67,7 +38,12 @@ const tweetSchema: Schema = new Schema(
       type: Boolean,
       default: false,
     },
-    user: userSchema,
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true,
+    },
   },
   {
     timestamps: true,
