@@ -1,6 +1,7 @@
 import Twitter, { RequestParams } from 'twitter';
 import request, { RequestPromiseOptions } from 'request-promise';
 import querystring from 'querystring';
+import needle from 'needle';
 
 import { RequestTokenResponse, TwitterError, UserAccessTokenResponse } from '../types/variables';
 import {
@@ -201,7 +202,7 @@ export {
   processAuthorization,
   getUserAccessToken,
   getTemporaryOauthToken,
-  resetTemporaryToken,
+  handleRetweetRateLimit,
   retweet,
   lookupUser,
   searchTweet,

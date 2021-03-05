@@ -13,6 +13,7 @@ export const transformStreamResponseToTweetInput = (streamResponse: StreamRespon
   return {
     id,
     createDate: new Date(created_at),
+    retweeted: false,
     text,
     user: {
       id: author_id,
