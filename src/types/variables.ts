@@ -41,7 +41,7 @@ export type CreateStreamRule = {
 
 type MatchingRule = Omit<StreamRule, 'value'>;
 
-type User = {
+export type UserField = {
   location: string;
   created_at: string;
   name: string;
@@ -49,20 +49,26 @@ type User = {
   username: string;
 };
 
-export type StreamResponse = {
-  data: {
-    id: string;
-    created_at: string;
-    text: string;
-    author_id: string;
-  };
+export type TweetField = {
+  id: string;
+  created_at: string;
+  text: string;
+  author_id: string;
+};
+
+export type StreamResult = {
+  data: TweetField;
   includes: {
-    users: User[];
+    users: UserField[];
   };
   matching_rules: MatchingRule[];
 };
 
-export type SearchResponse = Omit<StreamResponse, 'matching_rules'> & {
+export type SearchResult = {
+  data: TweetField[];
+  includes: {
+    users: UserField[];
+  };
   meta: {
     newest_id: string;
     oldest_id: string;

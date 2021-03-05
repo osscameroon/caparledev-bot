@@ -5,10 +5,10 @@ import needle from 'needle';
 import { stringify } from 'querystring';
 
 import { APP_BEARER_TOKEN, HASHTAG_TO_TRACK } from '../config/env';
-import { CreateStreamRule, StreamResponse, StreamRule } from '../types/variables';
+import { CreateStreamRule, StreamResult, StreamRule } from '../types/variables';
 import { logger } from '../config/logger';
 import { handleRetweetRateLimit, retweet } from './twitter.service';
-import { onGenericError, transformStreamResponseToTweetInput } from '../utils/helpers';
+import { onGenericError, transformTweetResultToInput } from '../utils/helpers';
 import { Tweet } from '../models/tweet.model';
 import { API_TWITTER_BASE_URL, STREAM_TIMEOUT_MESSAGE } from '../utils/constants';
 import { User } from '../models/user.model';
@@ -95,11 +95,11 @@ const setRules = async () => {
 
 const onStreamDataReceived = (data: any) => {
   try {
-    const streamTweet: StreamResponse = JSON.parse(data as string);
+    const streamTweet: StreamResult = JSON.parse(data as string);
 
     logger.info(streamTweet);
 
-    const [tweetInput, userInput] = transformStreamResponseToTweetInput(streamTweet);
+    const [tweetInput, userInput] = transformTweetResultToInput(streamTweet.data, streamTweet.includes.users[0]);
 
     // @ts-ignore
     User.upsert(userInput).then().catch(onGenericError);

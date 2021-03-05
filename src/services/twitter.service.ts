@@ -3,7 +3,7 @@ import request, { RequestPromiseOptions } from 'request-promise';
 import { parse } from 'querystring';
 import needle from 'needle';
 
-import { RequestTokenResponse, TwitterError, UserAccessTokenResponse } from '../types/variables';
+import { RequestTokenResponse, SearchResult, TwitterError, UserAccessTokenResponse } from '../types/variables';
 import {
   APP_ACCESS_TOKEN_KEY,
   APP_ACCESS_TOKEN_SECRET,
@@ -178,7 +178,9 @@ const lookupUser = (screenName: string) => {
   return createApplicationClient().get('users/lookup', options);
 };
 
-const searchTweet = async () => {
+// const processTweetFound = (result: SearchResult) => {};
+
+const searchTweet = async (): Promise<SearchResult> => {
   const params = {
     // query: `${HASHTAG_TO_TRACK} -is:retweet`,
     query: `#caparledev -is:retweet`,
