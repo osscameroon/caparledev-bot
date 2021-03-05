@@ -22,6 +22,7 @@ const DB_NAME = e.DB_NAME || '';
 const DB_USER = e.DB_USER || '';
 const DB_PASSWORD = e.DB_PASSWORD || '';
 const HASHTAG_TO_TRACK = e.HASHTAG_TO_TRACK || '';
+const { CRON_RETWEET_INTERVAL } = e;
 
 export {
   ENV,
@@ -42,4 +43,5 @@ export {
   DB_USER,
   DB_PASSWORD,
   HASHTAG_TO_TRACK,
+  CRON_RETWEET_INTERVAL,
 };
