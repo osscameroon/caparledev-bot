@@ -2,7 +2,7 @@
 // https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/quick-start
 import request, { RequestPromiseOptions } from 'request-promise';
 import needle from 'needle';
-import * as querystring from 'querystring';
+import { stringify } from 'querystring';
 
 import { APP_BEARER_TOKEN, HASHTAG_TO_TRACK } from '../config/env';
 import { CreateStreamRule, StreamResponse, StreamRule } from '../types/variables';
@@ -116,7 +116,7 @@ const onStreamDataReceived = (data: any) => {
 };
 
 const streamConnect = () => {
-  const streamURL = `${baseStreamURL}?${querystring.stringify(streamResponseFilter)}`;
+  const streamURL = `${baseStreamURL}?${stringify(streamResponseFilter)}`;
 
   const options = {
     headers: {

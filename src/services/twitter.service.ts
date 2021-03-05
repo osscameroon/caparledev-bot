@@ -1,6 +1,6 @@
 import Twitter, { RequestParams } from 'twitter';
 import request, { RequestPromiseOptions } from 'request-promise';
-import querystring from 'querystring';
+import { parse } from 'querystring';
 import needle from 'needle';
 
 import { RequestTokenResponse, TwitterError, UserAccessTokenResponse } from '../types/variables';
@@ -12,7 +12,6 @@ import {
   APP_CONSUMER_SECRET,
   BOT_ACCESS_TOKEN_KEY,
   BOT_ACCESS_TOKEN_SECRET,
-  HASHTAG_TO_TRACK,
 } from '../config/env';
 import { logger } from '../config/logger';
 import {
@@ -90,7 +89,7 @@ const processAuthorization = async (callbackUrl: string) => {
     throw new Error(response.error);
   }
 
-  const bodyParsed: RequestTokenResponse = querystring.parse(response.body) as any;
+  const bodyParsed: RequestTokenResponse = parse(response.body) as any;
 
   // Store temporary token to performs matching with the token received through the callback URL
   Setting.create([{ key: TEMPORARY_OAUTH_TOKEN_SETTING_KEY, value: bodyParsed.oauth_token }]).then();
@@ -119,7 +118,7 @@ const getUserAccessToken = async (oauthToken: string, oauthVerifier: string) => 
 
   const response = await request.post(`${API_TWITTER_BASE_URL}/oauth/access_token`, options);
 
-  return querystring.parse(response.body) as UserAccessTokenResponse;
+  return parse(response.body) as UserAccessTokenResponse;
 };
 
 /**
@@ -181,19 +180,19 @@ const lookupUser = (screenName: string) => {
 
 const searchTweet = async () => {
   const params = {
-    query: `${HASHTAG_TO_TRACK} -is:retweet`,
-    // query: `#caparledev -is:retweet -retweets_of:rhakgnar (is:quote OR is:reply)`,
-    'tweet.fields': 'id,text,author_id,created_at',
+    // query: `${HASHTAG_TO_TRACK} -is:retweet`,
+    query: `#caparledev -is:retweet`,
+    'tweet.fields': 'created_at',
+    expansions: 'author_id',
+    'user.fields': 'created_at,location',
   };
 
-  const response = await needle('get', 'https://api.twitter.com/2/tweets/search/recent', params, {
+  const response = await needle('get', `${API_TWITTER_BASE_URL}/2/tweets/search/recent`, params, {
     headers: {
       'User-Agent': 'v2RecentSearchJS',
       authorization: `Bearer ${APP_BEARER_TOKEN}`,
     },
   });
-
-  console.log(response.body);
 
   return response.body;
 };

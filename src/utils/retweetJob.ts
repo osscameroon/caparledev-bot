@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 
 import { CRON_RETWEET_INTERVAL } from '../config/env';
+import { logger } from '../config/logger';
 import { Setting } from '../models/setting.model';
 import { RATE_LIMIT_TIME_SETTING_KEY } from './constants';
 
@@ -36,6 +37,7 @@ const startRetweetJob = () => {
 
       const canRetweet = await canPerformRetweet();
 
+      logger.info(`Can Retweet => ${canRetweet}`);
       if (!canRetweet) {
         return;
       }
