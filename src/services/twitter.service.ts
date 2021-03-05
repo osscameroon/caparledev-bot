@@ -21,6 +21,9 @@ import {
   TEMPORARY_OAUTH_TOKEN_SETTING_KEY,
 } from '../utils/constants';
 import { Setting } from '../models/setting.model';
+import { transformTweetFieldToTweetInput, transformUserFieldToUserInput } from '../utils/helpers';
+import { User } from '../models/user.model';
+import { Tweet } from '../models/tweet.model';
 
 const createApplicationClient = () => {
   return new Twitter({
@@ -154,7 +157,7 @@ const handleRetweetRateLimit = (error: any) => {
  * Retweet a tweet
  */
 const retweet = (tweetId: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve: any, reject: any) => {
     createBotClient().post(`statuses/retweet/${tweetId}`, (error) => {
       if (error) {
         logger.error(error);
@@ -178,7 +181,23 @@ const lookupUser = (screenName: string) => {
   return createApplicationClient().get('users/lookup', options);
 };
 
-// const processTweetFound = (result: SearchResult) => {};
+const processTweetFound = async (result: SearchResult) => {
+  const userPromises = result.includes.users.map(async (userField) => {
+    const userInput = transformUserFieldToUserInput(userField);
+
+    // @ts-ignore
+    return User.upsert(userInput);
+  });
+
+  const tweetPromises = result.data.map(async (tweetField) => {
+    const tweetInput = transformTweetFieldToTweetInput(tweetField);
+
+    // @ts-ignore
+    return Tweet.upsert(tweetInput);
+  });
+
+  return Promise.all([...tweetPromises, ...userPromises]);
+};
 
 const searchTweet = async (): Promise<SearchResult> => {
   const params = {
@@ -200,11 +219,12 @@ const searchTweet = async (): Promise<SearchResult> => {
 };
 
 export {
-  processAuthorization,
   getUserAccessToken,
   getTemporaryOauthToken,
   handleRetweetRateLimit,
-  retweet,
   lookupUser,
+  processAuthorization,
+  processTweetFound,
+  retweet,
   searchTweet,
 };
