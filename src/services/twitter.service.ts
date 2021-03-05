@@ -118,7 +118,13 @@ const getUserAccessToken = async (oauthToken: string, oauthVerifier: string) => 
  * Get temporary token created for the user account login with Twitter
  */
 const getTemporaryOauthToken = async () => {
-  return Setting.findOne({ key: TEMPORARY_OAUTH_TOKEN });
+  const setting = await Setting.findOne({ key: TEMPORARY_OAUTH_TOKEN });
+
+  if (setting) {
+    return setting.value;
+  }
+
+  return null;
 };
 
 /**
