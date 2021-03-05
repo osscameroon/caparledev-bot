@@ -12,7 +12,7 @@ import {
   BOT_ACCESS_TOKEN_SECRET,
 } from '../config/env';
 import { logger } from '../config/logger';
-import { RATE_LIMIT_CODE, TEMPORARY_OAUTH_TOKEN, TWEET_PREFIX_KEY } from '../utils/constants';
+import { API_TWITTER_BASE_URL, RATE_LIMIT_CODE, TEMPORARY_OAUTH_TOKEN, TWEET_PREFIX_KEY } from '../utils/constants';
 import { Setting } from '../models/setting.model';
 
 const createApplicationClient = () => {
@@ -59,7 +59,7 @@ const requestTemporaryToken = async (callbackUrl: string) => {
  * @param oauthToken
  */
 const getAuthorizeURL = (oauthToken: string) => {
-  return `https://api.twitter.com/oauth/authenticate?force_login=true&oauth_token=${oauthToken}`;
+  return `${API_TWITTER_BASE_URL}/oauth/authenticate?force_login=true&oauth_token=${oauthToken}`;
 };
 
 /**
@@ -109,7 +109,7 @@ const getUserAccessToken = async (oauthToken: string, oauthVerifier: string) => 
     resolveWithFullResponse: true,
   };
 
-  const response = await request.post('https://api.twitter.com/oauth/access_token', options);
+  const response = await request.post(`${API_TWITTER_BASE_URL}/oauth/access_token`, options);
 
   return querystring.parse(response.body) as UserAccessTokenResponse;
 };
