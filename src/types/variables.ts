@@ -61,3 +61,12 @@ export type StreamResponse = {
   };
   matching_rules: MatchingRule[];
 };
+
+export type SearchResponse = Omit<StreamResponse, 'matching_rules'> & {
+  meta: {
+    newest_id: string;
+    oldest_id: string;
+    result_count: number;
+    next_token?: string;
+  };
+};
