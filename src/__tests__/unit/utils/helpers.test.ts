@@ -1,9 +1,9 @@
-import { StreamResponse } from '../../../types/variables';
-import { transformStreamResponseToTweetInput } from '../../../utils/helpers';
+import { StreamResult } from '../../../types/variables';
+import { transformTweetResultToInput } from '../../../utils/helpers';
 
 describe('Test Utils/Helpers', () => {
   it('should transform stream response to tweet input', () => {
-    const streamResponse: StreamResponse = {
+    const streamResult: StreamResult = {
       data: {
         id: '1366018171725807619',
         text: 'New Twitter API is good #caparledev',
@@ -29,18 +29,18 @@ describe('Test Utils/Helpers', () => {
       ],
     };
 
-    const tweetInput = transformStreamResponseToTweetInput(streamResponse);
+    const tweetInput = transformTweetResultToInput(streamResult.data, streamResult.includes.users[0]);
 
     expect(tweetInput).toMatchObject({
-      id: streamResponse.data.id,
-      text: streamResponse.data.text,
-      createDate: new Date(streamResponse.data.created_at),
+      id: streamResult.data.id,
+      text: streamResult.data.text,
+      createDate: new Date(streamResult.data.created_at),
       user: {
-        id: streamResponse.includes.users[0].id,
-        name: streamResponse.includes.users[0].name,
-        username: streamResponse.includes.users[0].username,
-        location: streamResponse.includes.users[0].location,
-        createDate: new Date(streamResponse.includes.users[0].created_at),
+        id: streamResult.includes.users[0].id,
+        name: streamResult.includes.users[0].name,
+        username: streamResult.includes.users[0].username,
+        location: streamResult.includes.users[0].location,
+        createDate: new Date(streamResult.includes.users[0].created_at),
       },
     });
   });
