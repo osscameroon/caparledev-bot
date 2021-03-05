@@ -197,13 +197,15 @@ const processTweetFound = async (result: SearchResult) => {
   return Promise.all([...tweetPromises, ...userPromises]);
 };
 
-const searchTweet = async (): Promise<SearchResult> => {
+const searchTweet = async (nextToken?: string): Promise<SearchResult> => {
   const params = {
     // query: `${HASHTAG_TO_TRACK} -is:retweet`,
     query: `#caparledev -is:retweet`,
     'tweet.fields': 'created_at',
     expansions: 'author_id',
     'user.fields': 'created_at,location',
+    next_token: nextToken,
+    max_results: 50,
   };
 
   const response = await needle('get', `${API_TWITTER_BASE_URL}/2/tweets/search/recent`, params, {
