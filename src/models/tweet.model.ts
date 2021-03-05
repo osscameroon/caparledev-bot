@@ -39,8 +39,9 @@ const tweetSchema: Schema = new Schema(
       default: false,
     },
     author: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      type: String,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      ref: (_instance: any, _doc: any) => 'id',
       required: true,
       index: true,
     },
@@ -53,4 +54,14 @@ const tweetSchema: Schema = new Schema(
 
 const Tweet: Model<TweetDocument> = mongoose.model('Tweet', tweetSchema);
 
-export { TweetDocument, Tweet, TweetInput };
+const upsertTweet = async (tweetInput: TweetInput) => {
+  const tweet = await Tweet.exists({ id: tweetInput.id });
+
+  if (!tweet) {
+    return Tweet.create([tweetInput]);
+  }
+
+  return;
+};
+
+export { TweetDocument, Tweet, TweetInput, upsertTweet };

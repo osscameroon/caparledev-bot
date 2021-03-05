@@ -21,6 +21,7 @@ const mainRoutes = () => {
 
   router.get('/search', async (_req, res) => {
     const result = await searchTweet();
+    // const result = await processTweetFound(response);
 
     return res.json(result);
   });
