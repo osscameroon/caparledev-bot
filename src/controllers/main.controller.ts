@@ -15,7 +15,7 @@ import {
   INVALID_OAUTH_TOKEN,
   OAUTH_TOKEN_MISSING_ERROR,
   STREAMING_API_RUNNING,
-  TEMPORARY_OAUTH_TOKEN,
+  TEMPORARY_OAUTH_TOKEN_SETTING_KEY,
   WELCOME_MESSAGE,
 } from '../utils/constants';
 
@@ -36,9 +36,9 @@ const handleUserAuthenticationCallback = async (req: Request, res: Response) => 
     return res.status(422).json({ error: OAUTH_TOKEN_MISSING_ERROR });
   }
 
-  const oauthTokenFromRedis = await getTemporaryOauthToken();
+  const oauthTokenFromDb = await getTemporaryOauthToken();
 
-  if (oauth_token !== oauthTokenFromRedis) {
+  if (oauth_token !== oauthTokenFromDb) {
     return res.status(422).json({ error: INVALID_OAUTH_TOKEN });
   }
 
@@ -47,7 +47,7 @@ const handleUserAuthenticationCallback = async (req: Request, res: Response) => 
   const oauthToken = response.oauth_token;
   const oauthTokenSecret = response.oauth_token_secret;
 
-  await Setting.updateOne({ key: TEMPORARY_OAUTH_TOKEN }, { value: null });
+  await Setting.updateOne({ key: TEMPORARY_OAUTH_TOKEN_SETTING_KEY }, { value: null });
 
   return res.json({ oauthToken, oauthTokenSecret });
 };
