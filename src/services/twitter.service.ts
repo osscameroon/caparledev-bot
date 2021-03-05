@@ -22,8 +22,8 @@ import {
 } from '../utils/constants';
 import { Setting } from '../models/setting.model';
 import { transformTweetFieldToTweetInput, transformUserFieldToUserInput } from '../utils/helpers';
-import { User } from '../models/user.model';
-import { Tweet } from '../models/tweet.model';
+import { upsertUser } from '../models/user.model';
+import { upsertTweet } from '../models/tweet.model';
 
 const createApplicationClient = () => {
   return new Twitter({
@@ -185,15 +185,13 @@ const processTweetFound = async (result: SearchResult) => {
   const userPromises = result.includes.users.map(async (userField) => {
     const userInput = transformUserFieldToUserInput(userField);
 
-    // @ts-ignore
-    return User.upsert(userInput);
+    return upsertUser(userInput);
   });
 
   const tweetPromises = result.data.map(async (tweetField) => {
     const tweetInput = transformTweetFieldToTweetInput(tweetField);
 
-    // @ts-ignore
-    return Tweet.upsert(tweetInput);
+    return upsertTweet(tweetInput);
   });
 
   return Promise.all([...tweetPromises, ...userPromises]);

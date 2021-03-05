@@ -42,7 +42,7 @@ export type CreateStreamRule = {
 type MatchingRule = Omit<StreamRule, 'value'>;
 
 export type UserField = {
-  location: string;
+  location?: string;
   created_at: string;
   name: string;
   id: string;

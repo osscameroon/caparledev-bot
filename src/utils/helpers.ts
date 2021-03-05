@@ -21,7 +21,7 @@ export const transformUserFieldToUserInput = (userField: UserField): UserInput =
   return {
     id: user_id,
     createDate: new Date(userCreateDate),
-    location,
+    location: location ?? null,
     name,
     username,
   };
