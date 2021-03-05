@@ -6,6 +6,7 @@ import { logger } from './config/logger';
 import { dbConnection } from './config/dabatase';
 import { setupRoutes } from './routes';
 import { startHashtagStream } from './controllers/main.controller';
+import { SERVER_STARTED_MESSAGE } from './utils/constants';
 
 const app = express();
 
@@ -18,5 +19,5 @@ server.listen(SERVER_PORT, async () => {
 
   startHashtagStream().then();
 
-  logger.info(`Server started - ${SERVER_PORT}`);
+  logger.info(SERVER_STARTED_MESSAGE);
 });

@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import { APP_CONSUMER_KEY, APP_CONSUMER_SECRET } from '../config/env';
 import { logger } from '../config/logger';
+import { BEARER_TOKEN_RESPONSE } from './constants';
 
 /**
  * It will be used to create rules for Stream API
@@ -19,7 +20,7 @@ import { logger } from '../config/logger';
       },
     })
     .then((response) => {
-      console.info('Your bearer token is: ', response.data.access_token);
+      console.info(BEARER_TOKEN_RESPONSE(response.data.access_token));
     })
     .catch((error) => {
       logger.error(error.response?.data);

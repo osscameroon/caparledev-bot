@@ -10,8 +10,9 @@ import { logger } from '../config/logger';
 import { retweet } from './twitter.service';
 import { onGenericError, transformStreamResponseToTweetInput } from '../utils/helpers';
 import { Tweet } from '../models/tweet.model';
+import { API_TWITTER_BASE_URL, STREAM_TIMEOUT_MESSAGE } from '../utils/constants';
 
-const baseStreamURL = 'https://api.twitter.com/2/tweets/search/stream';
+const baseStreamURL = `${API_TWITTER_BASE_URL}/2/tweets/search/stream`;
 const streamRulesURL = `${baseStreamURL}/rules`;
 
 const streamResponseFilter: Record<string, string> = {
@@ -153,7 +154,7 @@ const initializeStream = async () => {
 
   filteredStream.on('timeout', () => {
     // Reconnect on error
-    logger.warn('A connection error occurred. Reconnecting…');
+    logger.warn(STREAM_TIMEOUT_MESSAGE);
     setTimeout(() => {
       timeout++;
       streamConnect();

@@ -11,10 +11,16 @@ import {
 } from '../services/twitter.service';
 import { initializeStream } from '../services/stream.service';
 import { Setting } from '../models/setting.model';
-import { TEMPORARY_OAUTH_TOKEN } from '../utils/constants';
+import {
+  INVALID_OAUTH_TOKEN,
+  OAUTH_TOKEN_MISSING_ERROR,
+  STREAMING_API_RUNNING,
+  TEMPORARY_OAUTH_TOKEN,
+  WELCOME_MESSAGE,
+} from '../utils/constants';
 
 const welcome = (_req: Request, res: Response) => {
-  return res.json({ message: 'Welcome to Caparledev Bot' });
+  return res.json({ message: WELCOME_MESSAGE });
 };
 
 const generateAuthorizeURL = async (_req: Request, res: Response) => {
@@ -27,13 +33,13 @@ const handleUserAuthenticationCallback = async (req: Request, res: Response) => 
   const { oauth_token, oauth_verifier }: any = req.query;
 
   if (!oauth_token || !oauth_verifier) {
-    return res.status(422).json({ error: 'The oauth token or oauth verifier is missing!' });
+    return res.status(422).json({ error: OAUTH_TOKEN_MISSING_ERROR });
   }
 
   const oauthTokenFromRedis = await getTemporaryOauthToken();
 
   if (oauth_token !== oauthTokenFromRedis) {
-    return res.status(422).json({ error: "The oauth token doesn't match!" });
+    return res.status(422).json({ error: INVALID_OAUTH_TOKEN });
   }
 
   const response = await getUserAccessToken(oauth_token, oauth_verifier);
@@ -62,7 +68,7 @@ const startHashtagStream = async () => {
   if (ENABLE_STREAM) {
     await initializeStream();
 
-    logger.info(`You are now streaming hashtag ${HASHTAG_TO_TRACK}`);
+    logger.info(STREAMING_API_RUNNING(HASHTAG_TO_TRACK));
   }
 };
 
