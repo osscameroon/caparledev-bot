@@ -1,25 +1,77 @@
 {
   "types": {
-    "ci": {},
-    "chore": {},
-    "enh": {},
-    "eng": {},
-    "docs": {},
-    "feat": {},
-    "fix": {},
-    "refactor": {},
-    "revert": {},
-    "style": {},
-    "test": {}
+    "ci": {
+      "description": "Changes which affect CI configuration files and scripts",
+      "scopes": {
+        "app": {}
+      }
+    },
+    "chore": {
+      "description": "Changes which aren't user-facing",
+      "scopes": {
+        "app": {},
+        "database": {},
+        "logs": {},
+        "monitoring": {},
+        "stats": {}
+      }
+    },
+    "enh": {
+      "description": "Changes which improve a feature",
+      "scopes": {
+        "app": {},
+        "bot": {},
+        "database": {}
+      }
+    },
+    "docs": {
+      "description": "Changes which affect documentation",
+      "scopes": {
+        "app": {}
+      }
+    },
+    "feat": {
+      "description": "Changes which introduce a new feature",
+      "scopes": {
+        "app": {},
+        "monitor": {},
+        "bot": {}
+      }
+    },
+    "fix": {
+      "description": "Changes which patch a bug",
+      "scopes": {
+        "app": {},
+        "monitor": {},
+        "bot": {}
+      }
+    },
+    "refactor": {
+      "description": "Changes which neither fix a bug nor add a feature",
+      "scopes": {
+        "app": {}
+      }
+    },
+    "revert": {
+      "description": "Changes which revert a previous commit",
+      "scopes": {
+        "app": {}
+      }
+    },
+    "style": {
+      "description": "Changes which don't affect code logic, such as white-spaces, formatting, missing semi-colons",
+      "scopes": {
+        "app": {}
+      }
+    },
+    "test": {
+      "description": "Changes which add missing tests or correct existing tests",
+      "scopes": {
+        "app": {},
+        "bot": {},
+        "database": {}
+      }
+    }
   },
-  "scopes": {
-    "app": {},
-    "monitor": {},
-    "bot": {},
-    "ci": {},
-    "database": {},
-    "logs": {},
-    "monitoring": {},
-    "stats": {}
-  }
+  "scopes": {}
 }
