@@ -12,3 +12,4 @@ export const STREAM_TIMEOUT_MESSAGE = 'A connection error occurred. Reconnecting
 export const API_TWITTER_BASE_URL = 'https://api.twitter.com';
 export const SERVER_STARTED_MESSAGE = `Server started - ${SERVER_PORT}`;
 export const RATE_LIMIT_TIME_SETTING_KEY = 'rateLimitTimestamp';
+export const NEXT_SEARCH_TOKEN_SETTING_KEY = 'nextSearchToken';

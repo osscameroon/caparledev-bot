@@ -20,7 +20,8 @@
     "lint": "eslint --fix",
     "test": "NODE_ENV=test jest",
     "loc": "git ls-files | grep -Ev '.lock|.example|.gitignore' | xargs wc -l",
-    "bearer:token": "ts-node ./src/utils/bearerToken.ts"
+    "bearer:token": "ts-node ./src/utils/bearerToken.ts",
+    "search:tweet": "ts-node ./src/utils/searchTweetAndSave.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
