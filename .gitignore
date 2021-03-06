@@ -71,3 +71,5 @@ package-lock.json
 .DS_Store
 todo.txt
 logo
+key.txt
+run.sh
