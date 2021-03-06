@@ -11,7 +11,7 @@ import { handleRetweetRateLimit, retweet } from './twitter.service';
 import { onGenericError, transformTweetFieldToTweetInput, transformUserFieldToUserInput } from '../utils/helpers';
 import { Tweet } from '../models/tweet.model';
 import { API_TWITTER_BASE_URL, STREAM_TIMEOUT_MESSAGE } from '../utils/constants';
-import { User } from '../models/user.model';
+import { upsertUser } from '../models/user.model';
 
 const baseStreamURL = `${API_TWITTER_BASE_URL}/2/tweets/search/stream`;
 const streamRulesURL = `${baseStreamURL}/rules`;
@@ -102,8 +102,7 @@ const onStreamDataReceived = (data: any) => {
     const tweetInput = transformTweetFieldToTweetInput(streamTweet.data);
     const userInput = transformUserFieldToUserInput(streamTweet.includes.users[0]);
 
-    // @ts-ignore
-    User.upsert(userInput).then().catch(onGenericError);
+    upsertUser(userInput).then().catch(onGenericError);
 
     retweet(streamTweet.data.id)
       .then(() => {
