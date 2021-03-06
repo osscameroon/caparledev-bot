@@ -57,6 +57,7 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+.env.prod
 
 # next.js build output
 .next
