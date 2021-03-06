@@ -3,7 +3,7 @@ import cron from 'cron';
 import { CRON_RETWEET_INTERVAL } from '../config/env';
 import { logger } from '../config/logger';
 import { Setting } from '../models/setting.model';
-import { ALREADY_RETWEETED_CODE, RATE_LIMIT_TIME_SETTING_KEY, RETWEET_JOB_TRIGGERED_MESSAGE } from './constants';
+import { ALREADY_RETWEETED_CODE, RATE_LIMIT_TIME_SETTING_KEY } from './constants';
 import { Tweet, TweetDocument } from '../models/tweet.model';
 import { handleRetweetRateLimit, retweet } from '../services/twitter.service';
 import { onGenericError } from './helpers';
@@ -62,8 +62,6 @@ const retweetJob = new cron.CronJob(
       return;
     }
     isRunning = true;
-
-    logger.info(RETWEET_JOB_TRIGGERED_MESSAGE);
 
     const canRetweet = await canPerformRetweet();
 
