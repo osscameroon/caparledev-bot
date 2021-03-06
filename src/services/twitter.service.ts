@@ -3,7 +3,13 @@ import request, { RequestPromiseOptions } from 'request-promise';
 import { parse } from 'querystring';
 import needle from 'needle';
 
-import { RequestTokenResponse, SearchResult, TwitterError, UserAccessTokenResponse } from '../types/variables';
+import {
+  RequestTokenResponse,
+  SearchResult,
+  SearchErrorResponse,
+  TwitterError,
+  UserAccessTokenResponse,
+} from '../types/variables';
 import {
   APP_ACCESS_TOKEN_KEY,
   APP_ACCESS_TOKEN_SECRET,
@@ -12,6 +18,7 @@ import {
   APP_CONSUMER_SECRET,
   BOT_ACCESS_TOKEN_KEY,
   BOT_ACCESS_TOKEN_SECRET,
+  HASHTAG_TO_TRACK,
 } from '../config/env';
 import { logger } from '../config/logger';
 import {
@@ -182,6 +189,10 @@ const lookupUser = (screenName: string) => {
 };
 
 const processTweetFound = async (result: SearchResult) => {
+  if (!result.includes || !result.data) {
+    return [];
+  }
+
   const userPromises = result.includes.users.map(async (userField) => {
     const userInput = transformUserFieldToUserInput(userField);
 
@@ -197,16 +208,17 @@ const processTweetFound = async (result: SearchResult) => {
   return Promise.all([...tweetPromises, ...userPromises]);
 };
 
-const searchTweet = async (nextToken?: string): Promise<SearchResult> => {
+const searchTweet = async (nextToken?: string): Promise<SearchResult | SearchErrorResponse> => {
   const nextTokenQuery = nextToken ? { next_token: nextToken } : {};
   const params = {
-    // query: `${HASHTAG_TO_TRACK} -is:retweet`,
-    query: `#caparledev -is:retweet`,
+    query: `${HASHTAG_TO_TRACK} -is:retweet`,
+    // query: `#caparledev -is:retweet`,
     'tweet.fields': 'created_at',
     expansions: 'author_id',
     'user.fields': 'created_at,location',
     max_results: 50,
     ...nextTokenQuery,
+    // start_time: '2021-02-27T16:00:00.52Z',
   };
 
   const response = await needle('get', `${API_TWITTER_BASE_URL}/2/tweets/search/recent`, params, {
@@ -216,7 +228,7 @@ const searchTweet = async (nextToken?: string): Promise<SearchResult> => {
     },
   });
 
-  return response.body;
+  return response.body as SearchResult | SearchErrorResponse;
 };
 
 export {

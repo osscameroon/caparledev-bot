@@ -65,14 +65,26 @@ export type StreamResult = {
 };
 
 export type SearchResult = {
-  data: TweetField[];
-  includes: {
+  data?: TweetField[];
+  includes?: {
     users: UserField[];
   };
   meta: {
-    newest_id: string;
-    oldest_id: string;
+    newest_id?: string;
+    oldest_id?: string;
     result_count: number;
     next_token?: string;
   };
+};
+
+type SearchError = {
+  parameters: unknown[];
+  message?: string;
+};
+
+export type SearchErrorResponse = {
+  errors: SearchError[];
+  title: string;
+  detail?: string;
+  type?: string;
 };
