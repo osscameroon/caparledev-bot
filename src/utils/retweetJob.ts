@@ -1,4 +1,4 @@
-import cron from 'node-cron';
+import cron from 'cron';
 
 import { CRON_RETWEET_INTERVAL } from '../config/env';
 import { logger } from '../config/logger';
@@ -53,34 +53,35 @@ const findTweetAndRetweet = async () => {
   });
 };
 
+let isRunning = false;
+
+const retweetJob = new cron.CronJob(
+  CRON_RETWEET_INTERVAL,
+  async () => {
+    if (isRunning) {
+      return;
+    }
+    isRunning = true;
+
+    logger.info(RETWEET_JOB_TRIGGERED_MESSAGE);
+
+    const canRetweet = await canPerformRetweet();
+
+    if (!canRetweet) {
+      return;
+    }
+
+    // Search tweets not retweeted in DB and retweet them
+    await findTweetAndRetweet();
+    isRunning = false;
+  },
+  null,
+  true,
+  'Europe/Paris',
+);
+
 const startRetweetJob = () => {
-  let isRunning = false;
-
-  cron.schedule(
-    CRON_RETWEET_INTERVAL,
-    async () => {
-      if (isRunning) {
-        return;
-      }
-      isRunning = true;
-
-      logger.info(RETWEET_JOB_TRIGGERED_MESSAGE);
-
-      const canRetweet = await canPerformRetweet();
-
-      if (!canRetweet) {
-        return;
-      }
-
-      // Search tweets not retweeted in DB and retweet them
-      await findTweetAndRetweet();
-      isRunning = false;
-    },
-    {
-      scheduled: true,
-      timezone: 'Europe/Paris',
-    },
-  );
+  retweetJob.start();
 };
 
 export { startRetweetJob };
