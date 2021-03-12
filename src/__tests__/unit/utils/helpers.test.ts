@@ -1,4 +1,4 @@
-import { TweetField, UserField } from '../../../types/variables';
+import { TweetField, UserField } from '../../../types';
 import { transformTweetFieldToTweetInput, transformUserFieldToUserInput } from '../../../utils/helpers';
 
 describe('Test Utils/Helpers', () => {

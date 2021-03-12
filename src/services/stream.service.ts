@@ -5,7 +5,7 @@ import needle from 'needle';
 import { stringify } from 'querystring';
 
 import { APP_BEARER_TOKEN, HASHTAG_TO_TRACK } from '../config/env';
-import { CreateStreamRule, StreamResult, StreamRule } from '../types/variables';
+import { CreateStreamRule, StreamResult, StreamRule } from '../types';
 import { logger } from '../config/logger';
 import { handleRetweetRateLimit, retweet } from './twitter.service';
 import { onGenericError, transformTweetFieldToTweetInput, transformUserFieldToUserInput } from '../utils/helpers';
