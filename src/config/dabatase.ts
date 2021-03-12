@@ -14,9 +14,6 @@ const generateConnectionString = () => {
   return `mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 };
 
-/**
- * Create the connection to the database
- */
 const connectToDatabase = async () => {
   const options: ConnectionOptions = {
     useNewUrlParser: true,

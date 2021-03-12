@@ -1,6 +1,6 @@
-import { TweetInput } from '../models/tweet.model';
-import { TweetField, UserField } from '../types/variables';
+import { TweetField, UserField } from '../types';
 import { logger } from '../config/logger';
+import { TweetInput } from '../models/tweet.model';
 import { UserInput } from '../models/user.model';
 
 export const transformTweetFieldToTweetInput = (tweetField: TweetField): TweetInput => {

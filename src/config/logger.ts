@@ -4,7 +4,7 @@ import { createLogger, format, transports, Logger } from 'winston';
 import { isObject } from 'lodash';
 
 import { ENV, LOG_FILE_DIR } from './env';
-import { EnhancedLogger } from '../types/variables';
+import { EnhancedLogger } from '../types';
 
 const { combine, printf, timestamp }: typeof format = format;
 // eslint-disable-next-line @typescript-eslint/no-var-requires

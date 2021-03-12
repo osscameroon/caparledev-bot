@@ -9,7 +9,7 @@ import {
   SearchErrorResponse,
   TwitterError,
   UserAccessTokenResponse,
-} from '../types/variables';
+} from '../types';
 import {
   APP_ACCESS_TOKEN_KEY,
   APP_ACCESS_TOKEN_SECRET,
@@ -27,8 +27,8 @@ import {
   RATE_LIMIT_TIME_SETTING_KEY,
   TEMPORARY_OAUTH_TOKEN_SETTING_KEY,
 } from '../utils/constants';
-import { Setting } from '../models/setting.model';
 import { transformTweetFieldToTweetInput, transformUserFieldToUserInput } from '../utils/helpers';
+import { Setting } from '../models/setting.model';
 import { upsertUser } from '../models/user.model';
 import { upsertTweet } from '../models/tweet.model';
 
@@ -212,7 +212,6 @@ const searchTweet = async (nextToken?: string): Promise<SearchResult | SearchErr
   const nextTokenQuery = nextToken ? { next_token: nextToken } : {};
   const params = {
     query: `${HASHTAG_TO_TRACK} -is:retweet`,
-    // query: `#caparledev -is:retweet`,
     'tweet.fields': 'created_at',
     expansions: 'author_id',
     'user.fields': 'created_at,location',

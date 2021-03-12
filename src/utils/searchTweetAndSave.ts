@@ -1,9 +1,7 @@
-import { processTweetFound, searchTweet } from '../services/twitter.service';
+import { SearchResult, SearchErrorResponse } from '../types';
 import { logger } from '../config/logger';
-import { SearchResult, SearchErrorResponse } from '../types/variables';
-import { findOrCreateSetting, Setting } from '../models/setting.model';
-import { NEXT_SEARCH_TOKEN_SETTING_KEY } from './constants';
 import { connectToDatabase } from '../config/dabatase';
+import { processTweetFound, searchTweet } from '../services/twitter.service';
 
 const isErrorResponse = (result: SearchResult | SearchErrorResponse): result is SearchErrorResponse => {
   return (result as SearchErrorResponse).errors !== undefined;
@@ -18,12 +16,9 @@ const handleSearchTweetError = (error: any) => {
 };
 
 export const searchTweetAndSave = async () => {
-  const nextTokenSetting = await findOrCreateSetting(NEXT_SEARCH_TOKEN_SETTING_KEY, null);
-  let nextToken = nextTokenSetting.value ?? undefined;
-  let prevToken: string | undefined = undefined;
+  let nextToken: string | undefined = undefined;
 
   do {
-    prevToken = nextToken;
     const result: SearchResult | SearchErrorResponse = await searchTweet(nextToken).catch(handleSearchTweetError);
 
     logger.info(result);
@@ -36,10 +31,6 @@ export const searchTweetAndSave = async () => {
       await processTweetFound(result);
     }
   } while (nextToken);
-
-  if (prevToken) {
-    await Setting.updateOne({ key: NEXT_SEARCH_TOKEN_SETTING_KEY }, { value: prevToken });
-  }
 
   logger.info('Tweet search completed !');
 };
