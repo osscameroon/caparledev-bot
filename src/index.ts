@@ -7,7 +7,8 @@ import { connectToDatabase } from './config/dabatase';
 import { setupRoutes } from './routes';
 import { startHashtagStream } from './controllers/main.controller';
 import { SERVER_STARTED_MESSAGE } from './utils/constants';
-import { startRetweetJob } from './utils/retweetJob';
+import { startRetweetJob } from './jobs/retweetJob';
+import { startSearchTweetJob } from './jobs/searchTweetJob';
 
 const app = express();
 
@@ -21,6 +22,7 @@ server.listen(SERVER_PORT, async () => {
   startHashtagStream().then();
 
   startRetweetJob();
+  startSearchTweetJob();
 
   logger.info(SERVER_STARTED_MESSAGE);
 });
