@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { APP_CONSUMER_KEY, APP_CONSUMER_SECRET } from '../config/env';
 import { logger } from '../config/logger';
-import { BEARER_TOKEN_RESPONSE } from './constants';
+import { BEARER_TOKEN_RESPONSE } from '../utils/constants';
 
 /**
  * It will be used to create rules for Stream API

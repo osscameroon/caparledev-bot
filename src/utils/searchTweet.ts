@@ -1,6 +1,5 @@
 import { SearchResult, SearchErrorResponse } from '../types';
 import { logger } from '../config/logger';
-import { connectToDatabase } from '../config/dabatase';
 import { processTweetFound, searchTweet } from '../services/twitter.service';
 
 const isErrorResponse = (result: SearchResult | SearchErrorResponse): result is SearchErrorResponse => {
@@ -34,11 +33,3 @@ export const searchTweetAndSave = async () => {
 
   logger.info('Tweet search completed !');
 };
-
-(async () => {
-  await connectToDatabase();
-
-  await searchTweetAndSave();
-
-  process.exit(0);
-})();
