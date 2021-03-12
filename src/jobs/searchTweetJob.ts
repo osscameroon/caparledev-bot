@@ -1,7 +1,7 @@
 import cron from 'cron';
 
 import { CRON_SEARCH_INTERVAL } from '../config/env';
-import { searchTweetAndSave } from '../utils/searchTweetAndSave';
+import { searchTweetAndSave } from '../utils/searchTweet';
 
 let isRunning = false;
 
