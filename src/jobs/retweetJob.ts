@@ -3,10 +3,10 @@ import cron from 'cron';
 import { CRON_RETWEET_INTERVAL } from '../config/env';
 import { logger } from '../config/logger';
 import { Setting } from '../models/setting.model';
-import { ALREADY_RETWEETED_CODE, RATE_LIMIT_TIME_SETTING_KEY } from './constants';
+import { ALREADY_RETWEETED_CODE, RATE_LIMIT_TIME_SETTING_KEY } from '../utils/constants';
 import { Tweet, TweetDocument } from '../models/tweet.model';
 import { handleRetweetRateLimit, retweet } from '../services/twitter.service';
-import { onGenericError } from './helpers';
+import { onGenericError } from '../utils/helpers';
 
 const canPerformRetweet = async () => {
   const rateLimitExpireSetting = await Setting.findOne({ key: RATE_LIMIT_TIME_SETTING_KEY });
