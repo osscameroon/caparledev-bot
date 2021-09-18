@@ -69,7 +69,7 @@ export type SearchResult = {
   includes?: {
     users: UserField[];
   };
-  meta: {
+  meta?: {
     newest_id?: string;
     oldest_id?: string;
     result_count: number;

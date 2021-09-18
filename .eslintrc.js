@@ -12,7 +12,7 @@ module.exports = {
     sourceType: 'module',
     project: './tsconfig.json'
   },
-  ignorePatterns: ['.eslintrc.js', 'jest.config.js', '*.d.ts'],
+  ignorePatterns: ['.eslintrc.js', 'jest.config.js', 'commitlint.config.js', '*.d.ts'],
   env: {
     es6: true,
     node: true,

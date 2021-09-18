@@ -26,7 +26,7 @@ export const searchTweetAndSave = async () => {
       nextToken = undefined;
       logger.error(result);
     } else {
-      nextToken = result.meta.next_token;
+      nextToken = result.meta?.next_token;
       await processTweetFound(result);
     }
   } while (nextToken);
