@@ -65,6 +65,8 @@ const retweetJob = new cron.CronJob(
 
     const canRetweet = await canPerformRetweet();
 
+    console.log(new Date().toISOString(), 'Can retweet => ', canRetweet);
+
     if (!canRetweet) {
       return;
     }
