@@ -211,13 +211,12 @@ const processTweetFound = async (result: SearchResult) => {
 const searchTweet = async (nextToken?: string): Promise<SearchResult | SearchErrorResponse> => {
   const nextTokenQuery = nextToken ? { next_token: nextToken } : {};
   const params = {
-    query: `${HASHTAG_TO_TRACK} -is:retweet`,
+    query: `${HASHTAG_TO_TRACK} -is:retweet -is:reply`,
     'tweet.fields': 'created_at',
     expansions: 'author_id',
     'user.fields': 'created_at,location',
-    max_results: 50,
+    max_results: 10,
     ...nextTokenQuery,
-    // start_time: '2021-02-27T16:00:00.52Z',
   };
 
   const response = await needle('get', `${API_TWITTER_BASE_URL}/2/tweets/search/recent`, params, {
